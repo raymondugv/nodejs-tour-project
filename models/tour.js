@@ -21,6 +21,7 @@ module.exports = (sequelize, DataTypes) => {
 			departure_date: DataTypes.TEXT,
 			departure: DataTypes.INTEGER,
 			arrival: DataTypes.INTEGER,
+			owner: DataTypes.INTEGER,
 		},
 		{
 			sequelize,
