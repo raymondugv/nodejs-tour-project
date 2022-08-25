@@ -2,6 +2,7 @@ const models = require("../models");
 const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { response } = require("../app");
 
 exports.login = async (req, res) => {
 	try {
@@ -50,4 +51,16 @@ exports.login = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
+};
+
+exports.logout = async (req, res) => {
+	const authHeader = req.headers["authorization"];
+
+	jwt.sign(authHeader, "", { expiresIn: 1 }, (logout, error) => {
+		if (logout) {
+			res.json({ message: "You have been logged out." });
+		} else {
+			res.json({ message: "Error" });
+		}
+	});
 };
