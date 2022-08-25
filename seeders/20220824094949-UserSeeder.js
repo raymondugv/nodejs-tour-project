@@ -24,6 +24,22 @@ module.exports = {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
+				{
+					name: "Owner User",
+					email: "owner@admin.com",
+					password: await bcrypt.hash("owner", salt),
+					role_id: 2,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
+				{
+					name: "User",
+					email: "user@admin.com",
+					password: await bcrypt.hash("user", salt),
+					role_id: 3,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
 			],
 			{}
 		);
