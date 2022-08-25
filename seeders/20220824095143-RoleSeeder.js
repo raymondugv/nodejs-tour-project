@@ -17,14 +17,20 @@ module.exports = {
 				{
 					name: "Admininstrator",
 					description: "Can do everything",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Moderator",
 					description: "Can do some stuff",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "User",
 					description: "Can do nothing",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 			],
 			{}
