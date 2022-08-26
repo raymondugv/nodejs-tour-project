@@ -2,7 +2,12 @@ const models = require("../models");
 const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const { response } = require("../app");
+const salt = 10;
+
+const options = {
+	raw: true,
+	attributes: ["id", "name", "email", "role_id"],
+};
 
 exports.login = async (req, res) => {
 	try {
@@ -21,13 +26,15 @@ exports.login = async (req, res) => {
 		const { email, password } = data;
 
 		if (!email || !password) {
-			return res.json({ message: "Please provide email and password" });
+			return res
+				.status(400)
+				.json({ message: "Please provide email and password" });
 		}
 
 		const userExist = await models.User.findOne({ email: email });
 
 		if (!userExist) {
-			return res.json({ message: "User not found" });
+			return res.status(404).json({ message: "User not found" });
 		}
 
 		const isPasswordMatch = await bcrypt.compare(
@@ -36,16 +43,20 @@ exports.login = async (req, res) => {
 		);
 
 		if (!isPasswordMatch) {
-			return res.json({ message: "Password is incorrect" });
+			return res.status(500).json({ message: "Password is incorrect" });
 		}
 
 		const token = jwt.sign({ id: userExist.id }, process.env.JWT_SECRET, {
 			expiresIn: process.env.JWT_EXPIRE,
 		});
 
-		return res.json({
+		return res.status(200).json({
 			message: "Login successfully",
-			user: userExist,
+			user: {
+				name: userExist.name,
+				email: userExist.email,
+				role_id: userExist.role_id,
+			},
 			token,
 		});
 	} catch (error) {
@@ -54,13 +65,134 @@ exports.login = async (req, res) => {
 };
 
 exports.logout = async (req, res) => {
-	const authHeader = req.headers["authorization"];
+	try {
+		const authHeader = req.headers["authorization"];
 
-	jwt.sign(authHeader, "", { expiresIn: 1 }, (logout, error) => {
-		if (logout) {
-			res.json({ message: "You have been logged out." });
-		} else {
-			res.json({ message: "Error" });
+		jwt.sign(
+			authHeader,
+			process.env.JWT_SECRET,
+			{ expiresIn: 1 },
+			(logout, error) => {
+				if (logout) {
+					res.json({ message: "You have been logged out." });
+				} else {
+					res.status(500).json({ message: error });
+				}
+			}
+		);
+	} catch (error) {
+		res.status(500).json({ message: error });
+	}
+};
+
+// index
+exports.index = async (req, res) => {
+	try {
+		const users = await models.User.findAll(options);
+		return res.status(200).json({ users });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+};
+
+// show
+exports.show = async (req, res) => {
+	try {
+		const user = await models.User.findOne({
+			where: { id: req.params.id },
+			...options,
+		});
+		return res.status(200).json({ user });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+};
+
+// create
+exports.create = async (req, res) => {
+	try {
+		const data = req.body;
+		const schema = joi.object().keys({
+			name: joi.string().required(),
+			email: joi.string().email().required(),
+			password: joi.string().required(),
+			role_id: joi.number().required(),
+		});
+		const { error, value } = schema.validate(data);
+		if (error) {
+			return res.status(400).json({ error });
 		}
-	});
+		let { name, email, password, role_id } = data;
+		password = await bcrypt.hash(password, salt);
+		const userExist = await models.User.findOne({ where: { email } });
+
+		if (userExist) {
+			return res.status(409).json({ message: "User already exist" });
+		}
+
+		const user = await models.User.create({
+			name: name,
+			email: email,
+			password: password,
+			role_id: role_id,
+		});
+
+		return res.status(201).json({ message: "User created successfully" });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+};
+
+// update
+exports.update = async (req, res) => {
+	try {
+		const data = req.body;
+		const schema = joi.object().keys({
+			name: joi.string(),
+			email: joi.string().email(),
+			password: joi.string(),
+			role_id: joi.number(),
+		});
+
+		const { error, value } = schema.validate(data);
+
+		if (error) {
+			return res.status(400).json({ error });
+		}
+
+		const { name, email, password, role_id } = data;
+
+		const userExist = await models.User.findOne({ email: email });
+
+		if (userExist) {
+			return res.status(409).json({ message: "User already exist" });
+		}
+
+		const user = await models.User.update(
+			{
+				name: name,
+				email: email,
+				password: bcrypt.hash(password, salt),
+				role_id: role_id,
+			},
+			{ where: { id: req.params.id } }
+		);
+
+		return res.status(200).json({ user });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
+};
+
+// destroy
+exports.delete = async (req, res) => {
+	try {
+		const user = await models.User.destroy({
+			where: { id: req.params.id },
+		});
+
+		return res.status(200).json({ user });
+	} catch (error) {
+		return res.status(500).json({ error: error.message });
+	}
 };
