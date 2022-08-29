@@ -1,5 +1,33 @@
 const jwt = require("jsonwebtoken");
 
+const admin_role = {
+	id: 1,
+	name: "Admin",
+	permissions: [
+		{
+			path: "users",
+			action: "index",
+		},
+	],
+};
+
+const owner_role = {
+	id: 2,
+	name: "Owner",
+	permissions: [
+		{
+			path: "users",
+			action: "index",
+		},
+	],
+};
+
+const user_role = {
+	id: 3,
+	name: "User",
+	permissions: [],
+};
+
 module.exports = (req, res, next) => {
 	try {
 		const token = req.headers.authorization.split(" ")[1];
@@ -12,21 +40,23 @@ module.exports = (req, res, next) => {
 			return;
 		}
 
-		switch (req.body.roleId) {
-			case 1:
-				res.json({ message: "This is admin user" });
-				break;
-			case 2:
-				res.json({ message: "This is owner" });
-				break;
-			default:
-				res.json({ message: "This is user" });
-		}
+		res.json(req.originalUrl);
+
+		// switch (decoded.roleId) {
+		// 	case 1:
+		// 		res.json({ message: "Admin" });
+		// 		break;
+		// 	case 2:
+		// 		res.json({ message: "Owner" });
+		// 		break;
+		// 	default:
+		// 		res.json({ message: "User" });
+		// }
 
 		next();
-	} catch {
+	} catch (err) {
 		res.status(403).json({
-			error: "Please login to access this route",
+			error: "Please login to access this route" + err,
 		});
 	}
 };
