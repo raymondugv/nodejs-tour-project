@@ -12,6 +12,17 @@ module.exports = (req, res, next) => {
 			return;
 		}
 
+		switch (req.body.roleId) {
+			case 1:
+				res.json({ message: "This is admin user" });
+				break;
+			case 2:
+				res.json({ message: "This is owner" });
+				break;
+			default:
+				res.json({ message: "This is user" });
+		}
+
 		next();
 	} catch {
 		res.status(403).json({
