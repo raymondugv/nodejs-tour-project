@@ -5,9 +5,6 @@ const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
 
-const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
-
 const app = express();
 
 const whitelist = ["http://localhost:3000", "http://localhost:8000"];
@@ -30,7 +27,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/", require("./routes/index"));
+app.use("/users", require("./routes/users"));
+app.use("/countries", require("./routes/countries"));
+app.use("/cities", require("./routes/cities"));
 
 module.exports = app;
