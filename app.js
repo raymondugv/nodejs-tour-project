@@ -31,5 +31,6 @@ app.use("/", require("./routes/index"));
 app.use("/users", require("./routes/users"));
 app.use("/countries", require("./routes/countries"));
 app.use("/cities", require("./routes/cities"));
+app.use("/tours", require("./routes/tours"));
 
 module.exports = app;
