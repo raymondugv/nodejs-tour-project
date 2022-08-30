@@ -141,7 +141,9 @@ exports.create = async (req, res) => {
 			role_id: role_id,
 		});
 
-		return res.status(201).json({ message: "User created successfully" });
+		return res
+			.status(201)
+			.json({ message: "User created successfully", user });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
@@ -191,11 +193,19 @@ exports.update = async (req, res) => {
 // destroy
 exports.delete = async (req, res) => {
 	try {
-		const user = await models.User.destroy({
+		const user = await models.User.findOne({
 			where: { id: req.params.id },
 		});
 
-		return res.status(200).json({ user });
+		if (!User) {
+			return res.status(404).json({ message: "User not found" });
+		}
+
+		const userDelete = await models.User.destroy({
+			where: { id: req.params.id },
+		});
+
+		return res.status(200).json({ message: "User deleted successfully" });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
