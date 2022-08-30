@@ -197,7 +197,7 @@ exports.delete = async (req, res) => {
 			where: { id: req.params.id },
 		});
 
-		if (!User) {
+		if (!user) {
 			return res.status(404).json({ message: "User not found" });
 		}
 
