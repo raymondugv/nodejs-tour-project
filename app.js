@@ -4,7 +4,7 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
-
+const auth = require("./middleware/auth");
 const app = express();
 
 const whitelist = ["http://localhost:3000", "http://localhost:8000"];
@@ -28,9 +28,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", require("./routes/index"));
-app.use("/users", require("./routes/users"));
-app.use("/countries", require("./routes/countries"));
-app.use("/cities", require("./routes/cities"));
-app.use("/tours", require("./routes/tours"));
+app.use("/users", auth, require("./routes/users"));
+app.use("/countries", auth, require("./routes/countries"));
+app.use("/cities", auth, require("./routes/cities"));
+app.use("/tours", auth, require("./routes/tours"));
 
 module.exports = app;

@@ -19,7 +19,11 @@ const options = {
 
 exports.index = async (req, res) => {
 	try {
-		const tours = await models.Tour.findAll(options);
+		let tours = await models.Tour.findAll(options);
+
+		if (req.user.roleId !== 1) {
+			tours = tours.filter((tour) => tour.owner === req.user.id);
+		}
 
 		return res.status(200).json({ tours });
 	} catch (error) {
@@ -34,6 +38,14 @@ exports.show = async (req, res) => {
 			...options,
 		});
 
+		if (!tour) {
+			return res.status(404).json({ message: "Tour not found" });
+		}
+
+		if (tour.owner !== req.user.roleId) {
+			return res.status(401).json({ message: "Unauthorized" });
+		}
+
 		return res.status(200).json({ tour });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
@@ -42,7 +54,18 @@ exports.show = async (req, res) => {
 
 exports.create = async (req, res) => {
 	try {
-		const data = req.body;
+		let {
+			title,
+			slug,
+			description,
+			image,
+			price,
+			departure_date,
+			departure,
+			arrival,
+			owner,
+		} = req.body;
+
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			slug: joi.string().required(),
@@ -55,23 +78,11 @@ exports.create = async (req, res) => {
 			owner: joi.number().required(),
 		});
 
-		const { error, value } = schema.validate(data);
+		const { error, value } = schema.validate(req.body);
 
 		if (error) {
 			return res.status(400).json({ error });
 		}
-
-		let {
-			title,
-			slug,
-			description,
-			image,
-			price,
-			departure_date,
-			departure,
-			arrival,
-			owner,
-		} = data;
 
 		const tour = await models.Tour.create({
 			title: title,
@@ -95,7 +106,18 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
 	try {
-		const data = req.body;
+		let {
+			title,
+			slug,
+			description,
+			image,
+			price,
+			departure_date,
+			departure,
+			arrival,
+			owner,
+		} = req.body;
+
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			slug: joi.string().required(),
@@ -108,23 +130,11 @@ exports.update = async (req, res) => {
 			owner: joi.number().required(),
 		});
 
-		const { error, value } = schema.validate(data);
+		const { error, value } = schema.validate(req.body);
 
 		if (error) {
 			return res.status(400).json({ error });
 		}
-
-		let {
-			title,
-			slug,
-			description,
-			image,
-			price,
-			departure_date,
-			departure,
-			arrival,
-			owner,
-		} = data;
 
 		const tour = await models.Tour.update(
 			{
@@ -149,11 +159,20 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
 	try {
-		const tour = await models.Tour.destroy({
+		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 		});
 
-		return res.status(200).json({ message: "Tour deleted successfully" });
+		if (!tour) {
+			return res.status(404).json({ message: "Tour not found" });
+		}
+
+		if (req.user.roleId === tour.owner) {
+			await models.Tour.destroy({ where: { id: req.params.id } });
+			return res
+				.status(200)
+				.json({ message: "Tour deleted successfully" });
+		}
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
