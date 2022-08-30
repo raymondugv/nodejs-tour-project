@@ -159,11 +159,20 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
 	try {
-		const tour = await models.Tour.destroy({
+		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 		});
 
-		return res.status(200).json({ message: "Tour deleted successfully" });
+		if (!tour) {
+			return res.status(404).json({ message: "Tour not found" });
+		}
+
+		if (req.user.roleId === tour.owner) {
+			await models.Tour.destroy({ where: { id: req.params.id } });
+			return res
+				.status(200)
+				.json({ message: "Tour deleted successfully" });
+		}
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
