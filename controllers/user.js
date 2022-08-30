@@ -25,13 +25,9 @@ exports.login = async (req, res) => {
 
 		const { email, password } = data;
 
-		if (!email || !password) {
-			return res
-				.status(400)
-				.json({ message: "Please provide email and password" });
-		}
-
-		const userExist = await models.User.findOne({ email: email });
+		const userExist = await models.User.findOne({
+			where: { email: email },
+		});
 
 		if (!userExist) {
 			return res.status(404).json({ message: "User not found" });
