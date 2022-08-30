@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
-
+const controller = require("../controllers/user");
 const auth = require("../middleware/auth");
 
-/* GET home page. */
-router.get("/", auth, function (req, res, next) {
-	res.json({ message: "this is message" });
-});
+router.post("/login", controller.login);
+
+// middleware protected routes
+router.post("/logout", auth, controller.logout);
 
 module.exports = router;

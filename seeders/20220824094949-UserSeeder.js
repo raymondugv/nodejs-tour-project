@@ -1,7 +1,9 @@
 "use strict";
+const bcrypt = require("bcryptjs");
 
 module.exports = {
 	async up(queryInterface, Sequelize) {
+		const salt = await bcrypt.genSalt(10);
 		/**
 		 * Add seed commands here.
 		 *
@@ -17,8 +19,24 @@ module.exports = {
 				{
 					name: "Admin User",
 					email: "admin@admin.com",
-					password: "admin",
-					role_id: [1, 2, 3].random(),
+					password: await bcrypt.hash("admin", salt),
+					role_id: 1,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
+				{
+					name: "Owner User",
+					email: "owner@admin.com",
+					password: await bcrypt.hash("owner", salt),
+					role_id: 2,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
+				{
+					name: "User",
+					email: "user@admin.com",
+					password: await bcrypt.hash("user", salt),
+					role_id: 3,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},

@@ -16,15 +16,22 @@ module.exports = {
 			[
 				{
 					name: "Admininstrator",
-					description: "Can do everything",
+					description: "Can see everything but can't delete",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
-					name: "Moderator",
-					description: "Can do some stuff",
+					name: "Owner",
+					description:
+						"Can see only created item(s) and be able to delete",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "User",
 					description: "Can do nothing",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 			],
 			{}

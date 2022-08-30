@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
-const controllers = require("../controllers/user");
+const controllers = require("../controllers/city");
 
-/* GET users listing. */
 router.get("/", auth, controllers.index);
 router.get("/:id", auth, controllers.show);
 router.post("/", auth, controllers.create);

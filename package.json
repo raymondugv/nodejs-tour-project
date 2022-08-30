@@ -1,10 +1,10 @@
 {
 	"name": "tour-project",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"private": true,
 	"scripts": {
-		"initDB": "npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
-		"start": "nodemon --inspect ./bin/www"
+		"initDB": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
+		"start": "nodemon ./bin/www"
 	},
 	"dependencies": {
 		"bcryptjs": "^2.4.3",

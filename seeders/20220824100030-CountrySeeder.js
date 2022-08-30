@@ -16,23 +16,23 @@ module.exports = {
 			[
 				{
 					name: "Vietnam",
-					createAt: new Date(),
-					updateAt: new Date(),
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Thailand",
-					createAt: new Date(),
-					updateAt: new Date(),
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Cambodia",
-					createAt: new Date(),
-					updateAt: new Date(),
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Laos",
-					createAt: new Date(),
-					updateAt: new Date(),
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 			],
 			{}
