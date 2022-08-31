@@ -63,7 +63,6 @@ exports.create = async (req, res) => {
 			departure_date,
 			departure,
 			arrival,
-			owner,
 		} = req.body;
 
 		const schema = joi.object().keys({
@@ -75,7 +74,7 @@ exports.create = async (req, res) => {
 			departure_date: joi.date().required(),
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
-			owner: joi.number().required(),
+			owner: joi.number(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -93,7 +92,7 @@ exports.create = async (req, res) => {
 			departure_date: departure_date,
 			departure: departure,
 			arrival: arrival,
-			owner: owner,
+			owner: req.user.id,
 		});
 
 		return res
@@ -115,7 +114,6 @@ exports.update = async (req, res) => {
 			departure_date,
 			departure,
 			arrival,
-			owner,
 		} = req.body;
 
 		const schema = joi.object().keys({
@@ -127,7 +125,7 @@ exports.update = async (req, res) => {
 			departure_date: joi.date().required(),
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
-			owner: joi.number().required(),
+			owner: joi.number(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -146,7 +144,7 @@ exports.update = async (req, res) => {
 				departure_date: departure_date,
 				departure: departure,
 				arrival: arrival,
-				owner: owner,
+				owner: req.user.id,
 			},
 			{ where: { id: req.params.id } }
 		);
@@ -162,10 +160,6 @@ exports.delete = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 		});
-
-		if (!tour) {
-			return res.status(404).json({ message: "Tour not found" });
-		}
 
 		if (req.user.roleId === tour.owner) {
 			await models.Tour.destroy({ where: { id: req.params.id } });
