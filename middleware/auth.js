@@ -1,33 +1,5 @@
 const jwt = require("jsonwebtoken");
 
-const admin_role = {
-	id: 1,
-	name: "Admin",
-	permissions: [
-		{
-			path: "users",
-			action: "index",
-		},
-	],
-};
-
-const owner_role = {
-	id: 2,
-	name: "Owner",
-	permissions: [
-		{
-			path: "users",
-			action: "index",
-		},
-	],
-};
-
-const user_role = {
-	id: 3,
-	name: "User",
-	permissions: [],
-};
-
 module.exports = (req, res, next) => {
 	try {
 		const token = req.headers.authorization.split(" ")[1];
