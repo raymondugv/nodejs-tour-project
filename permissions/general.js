@@ -1,26 +1,32 @@
-const canViewItem = (user, tour) => {
-	return user.roleId === 1 || user.roleId === 2 || tour.owner === user.id;
+const { ROLE, PERMISSION, PERMISSION_ROLE } = require("../data");
+
+const canViewItem = (user, item) => {
+	return (
+		user.roleId === ROLE.ADMIN ||
+		user.roleId === ROLE.OWNER ||
+		item.owner === user.id
+	);
 };
 
-const scopedItems = (user, tours) => {
-	if (user.roleId === "1") {
-		return tours;
+const scopedItems = (user, items) => {
+	if (user.roleId === ROLE.ADMIN) {
+		return items;
 	}
 
-	return tours.filter((tour) => tour.owner === user.id);
+	return items.filter((item) => item.owner === user.id);
 };
 
-const canDeleteItem = (user, tour) => {
-	return tour.owner === user.id;
+const canDeleteItem = (user, item) => {
+	return item.owner === user.id;
 };
 
-const canEditItem = (user, tour) => {
-	return tour.owner === user.id;
+const canEditItem = (user, item) => {
+	return item.owner === user.id;
 };
 
 module.exports = {
-	canViewItem: canViewItem,
-	scopedItems: scopedItems,
-	canDeleteItem: canDeleteItem,
-	canEditItem: canEditItem,
+	canViewItem,
+	scopedItems,
+	canDeleteItem,
+	canEditItem,
 };
