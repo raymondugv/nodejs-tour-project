@@ -1,9 +1,23 @@
 const ROLE = {
-	ADMIN: "admin",
-	OWNER: "owner",
-	USER: "user",
+	ADMIN: 1,
+	OWNER: 2,
+	USER: 3,
+};
+
+const PERMISSION = {
+	CREATE: 1,
+	UPDATE: 2,
+	DELETE: 3,
+};
+
+const PERMISSION_ROLE = {
+	CREATE: [ROLE.ADMIN, ROLE.OWNER],
+	UPDATE: [ROLE.ADMIN, ROLE.OWNER],
+	DELETE: [ROLE.OWNER],
 };
 
 module.exports = {
-	ROLE: ROLE,
+	ROLE,
+	PERMISSION,
+	PERMISSION_ROLE,
 };
