@@ -29,10 +29,6 @@ exports.login = async (req, res) => {
 			where: { email: email },
 		});
 
-		if (!userExist) {
-			return res.status(404).json({ message: "User not found" });
-		}
-
 		const isPasswordMatch = await bcrypt.compare(
 			password,
 			userExist.password
@@ -193,14 +189,6 @@ exports.update = async (req, res) => {
 // destroy
 exports.delete = async (req, res) => {
 	try {
-		const user = await models.User.findOne({
-			where: { id: req.params.id },
-		});
-
-		if (!user) {
-			return res.status(404).json({ message: "User not found" });
-		}
-
 		const userDelete = await models.User.destroy({
 			where: { id: req.params.id },
 		});
