@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { ROLE, PERMISSION, PERMISSION_ROLE } = require("../data");
+const { ROLE, PERMISSION, PERMISSION_ROLE } = require("../config/data");
 const {
 	canViewItem,
 	canDeleteItem,
