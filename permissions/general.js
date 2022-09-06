@@ -1,4 +1,4 @@
-const { ROLE, PERMISSION_ROLE } = require("../data");
+const { ROLE, PERMISSION_ROLE } = require("../config/data");
 
 const canViewItem = (user, item) => {
 	return PERMISSION_ROLE.READ.includes(user.roleId) || item.owner === user.id;
