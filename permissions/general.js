@@ -1,11 +1,7 @@
-const { ROLE, PERMISSION, PERMISSION_ROLE } = require("../data");
+const { ROLE, PERMISSION_ROLE } = require("../data");
 
 const canViewItem = (user, item) => {
-	return (
-		user.roleId === ROLE.ADMIN ||
-		user.roleId === ROLE.OWNER ||
-		item.owner === user.id
-	);
+	return PERMISSION_ROLE.READ.includes(user.roleId) || item.owner === user.id;
 };
 
 const scopedItems = (user, items) => {
@@ -17,11 +13,15 @@ const scopedItems = (user, items) => {
 };
 
 const canDeleteItem = (user, item) => {
-	return item.owner === user.id;
+	return (
+		PERMISSION_ROLE.DELETE.includes(user.roleId) || item.owner === user.id
+	);
 };
 
 const canEditItem = (user, item) => {
-	return item.owner === user.id;
+	return (
+		PERMISSION_ROLE.UPDATE.includes(user.roleId) || item.owner === user.id
+	);
 };
 
 module.exports = {
