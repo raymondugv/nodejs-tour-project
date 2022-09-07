@@ -1,33 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const { ROLE, PERMISSION, PERMISSION_ROLE } = require("../config/data");
+const {
+	ROLE,
+	PERMISSION,
+	PERMISSION_ROLE,
+	ACTIVE_FIELD,
+} = require("../config/data");
+
 const {
 	canViewItem,
 	canDeleteItem,
 	canEditItem,
+	canActiveItem,
 } = require("../permissions/general");
 
 router.get("/", (req, res, next) => {
-	return res.json({ PERMISSION_ROLE });
+	return res.json({ ROLE, PERMISSION, PERMISSION_ROLE });
 });
 
-router.get("/browse", (req, res, next) => {
-	return res.json(PERMISSION_ROLE.BROWSE.includes(1));
+router.get("/active", setItem, (req, res, next) => {
+	const condition = canActiveItem(req.user, req.body);
+
+	return res.json(condition);
 });
 
-router.get("/test", (req, res, next) => {
-	const condition =
-		canViewItem(req.user, 5) ||
-		canEditItem(req.user, req.item) ||
-		canDeleteItem(req.user, req.item);
-
-	if (!condition) {
-		return res.status(403).json({
-			error: "You do not have permission to perform this action.",
-		});
-	}
-
-	return res.json({ condition });
-});
+async function setItem(req, res, next) {
+	req.item = 5;
+	next();
+}
 
 module.exports = router;
