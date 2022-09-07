@@ -1,5 +1,6 @@
 "use strict";
 const bcrypt = require("bcryptjs");
+const { ROLE } = require("../config/data");
 
 module.exports = {
 	async up(queryInterface, Sequelize) {
@@ -20,7 +21,7 @@ module.exports = {
 					name: "Admin User",
 					email: "admin@admin.com",
 					password: await bcrypt.hash("admin", salt),
-					role_id: 1,
+					role_id: ROLE.ADMIN,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
@@ -28,7 +29,7 @@ module.exports = {
 					name: "Owner User",
 					email: "owner@admin.com",
 					password: await bcrypt.hash("owner", salt),
-					role_id: 2,
+					role_id: ROLE.OWNER,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
@@ -36,7 +37,15 @@ module.exports = {
 					name: "User",
 					email: "user@admin.com",
 					password: await bcrypt.hash("user", salt),
-					role_id: 3,
+					role_id: ROLE.USER,
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
+				{
+					name: "Editor",
+					email: "editor@admin.com",
+					password: await bcrypt.hash("editor", salt),
+					role_id: ROLE.EDITOR,
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
