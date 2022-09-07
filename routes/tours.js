@@ -6,9 +6,10 @@ const permission = require("../middleware/permission");
 
 router.get("/", controller.index);
 router.get("/:id", setTour, permission, controller.show);
-router.post("/", controller.create);
+router.post("/", permission, controller.create);
 router.put("/:id", setTour, permission, controller.update);
 router.delete("/:id", setTour, permission, controller.delete);
+router.post("/:id/active", setTour, permission, controller.active);
 
 async function setTour(req, res, next) {
 	const tour = await models.Tour.findOne({ where: { id: req.params.id } });
