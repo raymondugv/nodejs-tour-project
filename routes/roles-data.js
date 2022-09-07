@@ -8,7 +8,7 @@ const {
 } = require("../permissions/general");
 
 router.get("/", (req, res, next) => {
-	return res.json({ ROLE, PERMISSION, PERMISSION_ROLE });
+	return res.json({ PERMISSION_ROLE });
 });
 
 router.get("/browse", (req, res, next) => {
