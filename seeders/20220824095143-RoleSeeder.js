@@ -33,6 +33,12 @@ module.exports = {
 					createdAt: new Date(),
 					updatedAt: new Date(),
 				},
+				{
+					name: "Editor",
+					description: "Only update status",
+					createdAt: new Date(),
+					updatedAt: new Date(),
+				},
 			],
 			{}
 		);
