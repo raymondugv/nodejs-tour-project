@@ -13,15 +13,18 @@ const PERMISSION = {
 };
 
 const PERMISSION_ROLE = {
-	READ: { role: [ROLE.ADMIN, ROLE.OWNER], field: null },
-	CREATE: { role: [ROLE.ADMIN, ROLE.OWNER], field: null },
-	UPDATE: { role: [ROLE.ADMIN, ROLE.OWNER], field: null },
-	DELETE: { role: [ROLE.OWNER], field: null },
-	ACTIVE: { role: [ROLE.EDITOR], field: ["active"] },
+	READ: [ROLE.ADMIN, ROLE.OWNER],
+	CREATE: [ROLE.ADMIN, ROLE.OWNER],
+	UPDATE: [ROLE.ADMIN, ROLE.OWNER],
+	DELETE: [ROLE.OWNER],
+	ACTIVE: [ROLE.EDITOR],
 };
+
+const ACTIVE_FIELD = ["active", "status", "public", "published", "publish"];
 
 module.exports = {
 	ROLE: ROLE,
 	PERMISSION: PERMISSION,
 	PERMISSION_ROLE: PERMISSION_ROLE,
+	ACTIVE_FIELD: ACTIVE_FIELD,
 };

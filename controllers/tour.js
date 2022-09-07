@@ -14,6 +14,7 @@ const options = {
 		"departure",
 		"arrival",
 		"owner",
+		"status",
 	],
 };
 
@@ -115,6 +116,49 @@ exports.update = async (req, res) => {
 			departure,
 			arrival,
 		} = req.body;
+
+		const schema = joi.object().keys({
+			title: joi.string().required(),
+			slug: joi.string().required(),
+			description: joi.string().required(),
+			image: joi.string().required(),
+			price: joi.number().required(),
+			departure_date: joi.date().required(),
+			departure: joi.number().required(),
+			arrival: joi.number().required(),
+			owner: joi.number(),
+		});
+
+		const { error, value } = schema.validate(req.body);
+
+		if (error) {
+			return res.status(400).json({ error });
+		}
+
+		const tour = await models.Tour.update(
+			{
+				title: title,
+				slug: slug,
+				description: description,
+				image: image,
+				price: price,
+				departure_date: departure_date,
+				departure: departure,
+				arrival: arrival,
+				owner: req.user.id,
+			},
+			{ where: { id: req.params.id } }
+		);
+
+		return res.status(200).json({ message: "Tour updated successfully" });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+exports.active = async (req, res) => {
+	try {
+		let { status } = req.body;
 
 		const schema = joi.object().keys({
 			title: joi.string().required(),
