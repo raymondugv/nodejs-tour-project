@@ -50,7 +50,7 @@ describe("user functions with admin role", () => {
 
 	test("update User information", async () => {
 		const response = await request(app)
-			.put("/users/1")
+			.put("/users/5")
 			.set("Authorization", `Bearer ${token}`)
 			.send(UPDATE_PAYLOAD);
 

@@ -13,7 +13,6 @@ describe("countries function with admin role", () => {
 	beforeAll(async () => {
 		const response = await login("admin@email.com", "admin");
 
-		console.log("response", response.body);
 		token = response.body.token;
 	});
 
