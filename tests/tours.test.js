@@ -36,7 +36,7 @@ const login = async (user, password) => {
 };
 
 describe("tour functions with admin role", () => {
-	beforeAll(async () => {
+	beforeEach(async () => {
 		const response = await login("admin@email.com", "admin");
 
 		token = response.body.token;
@@ -76,7 +76,7 @@ describe("tour functions with admin role", () => {
 		expect(response.statusCode).toBe(200);
 	});
 
-	afterAll(() => {
+	afterEach(() => {
 		token = "";
 	});
 });
