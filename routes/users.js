@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 const controllers = require("../controllers/user");
 const permission = require("../middleware/permission");
+const models = require("../models");
 
 /* GET users listing. */
-router.get("/", controllers.index);
+router.get("/", permission, controllers.index);
 router.get("/:id", setUser, permission, controllers.show);
 router.post("/", controllers.create);
 router.put("/:id", setUser, permission, controllers.update);
