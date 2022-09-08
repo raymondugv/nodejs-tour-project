@@ -14,6 +14,7 @@ const options = {
 		"departure",
 		"arrival",
 		"owner",
+		"status",
 	],
 };
 
@@ -145,6 +146,23 @@ exports.update = async (req, res) => {
 				departure: departure,
 				arrival: arrival,
 				owner: req.user.id,
+			},
+			{ where: { id: req.params.id } }
+		);
+
+		return res.status(200).json({ message: "Tour updated successfully" });
+	} catch (error) {
+		return res.status(500).json({ message: error.message });
+	}
+};
+
+exports.active = async (req, res) => {
+	try {
+		let { status } = req.body;
+
+		const tour = await models.Tour.update(
+			{
+				status: status,
 			},
 			{ where: { id: req.params.id } }
 		);
