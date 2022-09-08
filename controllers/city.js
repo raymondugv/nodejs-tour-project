@@ -44,7 +44,7 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		let { name, country_id, slug, description } = data;
+		let { name, country, slug, description } = data;
 		const cityExist = await models.City.findOne({ where: { slug } });
 
 		if (cityExist) {
@@ -53,7 +53,7 @@ exports.create = async (req, res) => {
 
 		const city = await models.City.create({
 			name: name,
-			country_id: country_id,
+			country: country,
 			slug: slug,
 			description: description,
 		});
@@ -105,14 +105,6 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
 	try {
-		const city = await models.City.findOne({
-			where: { id: req.params.id },
-		});
-
-		if (!city) {
-			return res.status(404).json({ message: "City not found" });
-		}
-
 		const cityDelete = await models.City.destroy({
 			where: { id: req.params.id },
 		});

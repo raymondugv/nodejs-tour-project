@@ -19,12 +19,16 @@ module.exports = {
 					country: 1,
 					slug: "ho-chi-minh",
 					description: "This is ho chi minh city",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Ha Noi",
 					country: 1,
 					slug: "ha-noi",
 					description: "This is ha noi city",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 			],
 			{}
