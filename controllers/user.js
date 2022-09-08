@@ -88,10 +88,11 @@ exports.logout = async (req, res) => {
 // index
 exports.index = async (req, res) => {
 	try {
-		const users = await models.User.findAll(options);
+		let users = await models.User.findAll(options);
+
 		return res.status(200).json({ users });
 	} catch (error) {
-		return res.status(500).json({ error: error.message });
+		return res.status(500).json({ message: error.message });
 	}
 };
 
@@ -111,20 +112,22 @@ exports.show = async (req, res) => {
 // create
 exports.create = async (req, res) => {
 	try {
-		const data = req.body;
 		const schema = joi.object().keys({
 			name: joi.string().required(),
 			email: joi.string().email().required(),
 			password: joi.string().required(),
 			role_id: joi.number().required(),
 		});
-		const { error, value } = schema.validate(data);
+		const { error, value } = schema.validate(req.body);
 		if (error) {
 			return res.status(400).json({ error });
 		}
-		let { name, email, password, role_id } = data;
+		let { name, email, password, role_id } = req.body;
 		password = await bcrypt.hash(password, salt);
-		const userExist = await models.User.findOne({ where: { email } });
+		const userExist = await models.User.findOne({
+			where: { email: req.body.email },
+			...options,
+		});
 
 		if (userExist) {
 			return res.status(409).json({ message: "User already exist" });
@@ -148,7 +151,6 @@ exports.create = async (req, res) => {
 // update
 exports.update = async (req, res) => {
 	try {
-		const data = req.body;
 		const schema = joi.object().keys({
 			name: joi.string(),
 			email: joi.string().email(),
@@ -156,31 +158,26 @@ exports.update = async (req, res) => {
 			role_id: joi.number(),
 		});
 
-		const { error, value } = schema.validate(data);
+		const { error, value } = schema.validate(req.body);
 
 		if (error) {
 			return res.status(400).json({ error });
 		}
 
-		const { name, email, password, role_id } = data;
+		let { name, email, password, role_id } = req.body;
 
-		const userExist = await models.User.findOne({ email: email });
-
-		if (userExist) {
-			return res.status(409).json({ message: "User already exist" });
-		}
-
+		password = await bcrypt.hash(password, salt);
 		const user = await models.User.update(
 			{
 				name: name,
 				email: email,
-				password: bcrypt.hash(password, salt),
+				password: password,
 				role_id: role_id,
 			},
 			{ where: { id: req.params.id } }
 		);
 
-		return res.status(200).json({ user });
+		return res.status(200).json({ message: "User updated successfully" });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
