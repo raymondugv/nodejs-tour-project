@@ -6,7 +6,7 @@
 		"initDB": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
 		"start": "nodemon ./bin/www",
 		"test": "cross-env NODE_ENV=test jest --detectOpenHandles",
-		"prestest": "cross-env NODE_ENV=test npm run initDB"
+		"pretest": "cross-env NODE_ENV=test npm run initDB"
 	},
 	"dependencies": {
 		"bcryptjs": "^2.4.3",
