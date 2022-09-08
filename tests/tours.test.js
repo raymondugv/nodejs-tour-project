@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 
-const { login, logout } = require("./auth-test");
+const { login, logout } = require("../tests/auth-test");
 
 const random = Array(5)
 	.fill()
@@ -69,6 +69,14 @@ describe("tour functions with admin role", () => {
 			.put("/tours/1")
 			.set("Authorization", `Bearer ${token}`)
 			.send(UPDATE_PAYLOAD);
+
+		expect(response.statusCode).toBe(200);
+	});
+
+	test("delete tour", async () => {
+		const response = await request(app)
+			.delete("/tours/1")
+			.set("Authorization", `Bearer ${token}`);
 
 		expect(response.statusCode).toBe(200);
 	});
