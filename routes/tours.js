@@ -4,7 +4,7 @@ const controller = require("../controllers/tour");
 const models = require("../models");
 const permission = require("../middleware/permission");
 
-router.get("/", controller.index);
+router.get("/", permission, controller.index);
 router.get("/:id", setTour, permission, controller.show);
 router.post("/", permission, controller.create);
 router.put("/:id", setTour, permission, controller.update);

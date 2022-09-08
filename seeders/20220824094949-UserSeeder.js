@@ -19,7 +19,7 @@ module.exports = {
 			[
 				{
 					name: "Admin User",
-					email: "admin@admin.com",
+					email: "admin@email.com",
 					password: await bcrypt.hash("admin", salt),
 					role_id: ROLE.ADMIN,
 					createdAt: new Date(),
@@ -27,7 +27,7 @@ module.exports = {
 				},
 				{
 					name: "Owner User",
-					email: "owner@admin.com",
+					email: "owner@email.com",
 					password: await bcrypt.hash("owner", salt),
 					role_id: ROLE.OWNER,
 					createdAt: new Date(),
@@ -35,7 +35,7 @@ module.exports = {
 				},
 				{
 					name: "User",
-					email: "user@admin.com",
+					email: "user@email.com",
 					password: await bcrypt.hash("user", salt),
 					role_id: ROLE.USER,
 					createdAt: new Date(),
@@ -43,7 +43,7 @@ module.exports = {
 				},
 				{
 					name: "Editor",
-					email: "editor@admin.com",
+					email: "editor@email.com",
 					password: await bcrypt.hash("editor", salt),
 					role_id: ROLE.EDITOR,
 					createdAt: new Date(),
