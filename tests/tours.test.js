@@ -1,5 +1,8 @@
 const request = require("supertest");
 const app = require("../app");
+
+const { login, logout } = require("./auth-test");
+
 const random = Array(5)
 	.fill()
 	.map(() => ((Math.random() * 36) | 0).toString(36))
@@ -29,14 +32,8 @@ const UPDATE_PAYLOAD = {
 
 let token = "";
 
-const login = async (user, password) => {
-	return await request(app)
-		.post("/login")
-		.send({ email: user, password: password });
-};
-
 describe("tour functions with admin role", () => {
-	beforeEach(async () => {
+	beforeAll(async () => {
 		const response = await login("admin@email.com", "admin");
 
 		token = response.body.token;
@@ -76,7 +73,7 @@ describe("tour functions with admin role", () => {
 		expect(response.statusCode).toBe(200);
 	});
 
-	afterEach(() => {
-		token = "";
+	afterAll(async () => {
+		await logout(token).then((token = ""));
 	});
 });
