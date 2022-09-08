@@ -160,35 +160,9 @@ exports.active = async (req, res) => {
 	try {
 		let { status } = req.body;
 
-		const schema = joi.object().keys({
-			title: joi.string().required(),
-			slug: joi.string().required(),
-			description: joi.string().required(),
-			image: joi.string().required(),
-			price: joi.number().required(),
-			departure_date: joi.date().required(),
-			departure: joi.number().required(),
-			arrival: joi.number().required(),
-			owner: joi.number(),
-		});
-
-		const { error, value } = schema.validate(req.body);
-
-		if (error) {
-			return res.status(400).json({ error });
-		}
-
 		const tour = await models.Tour.update(
 			{
-				title: title,
-				slug: slug,
-				description: description,
-				image: image,
-				price: price,
-				departure_date: departure_date,
-				departure: departure,
-				arrival: arrival,
-				owner: req.user.id,
+				status: status,
 			},
 			{ where: { id: req.params.id } }
 		);
