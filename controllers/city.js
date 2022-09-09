@@ -9,7 +9,10 @@ const options = {
 // index
 exports.index = async (req, res) => {
 	try {
-		const cities = await models.City.findAll(options);
+		const cities = await models.City.findAll({
+			include: ["countries"],
+			options: options,
+		});
 		return res.status(200).json({ cities });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -20,6 +23,7 @@ exports.show = async (req, res) => {
 	try {
 		const city = await models.City.findOne({
 			where: { id: req.params.id },
+			include: ["countries"],
 			...options,
 		});
 		return res.status(200).json({ city });
@@ -81,7 +85,10 @@ exports.update = async (req, res) => {
 		}
 
 		let { name, country, slug, description } = data;
-		const cityExist = await models.City.findOne({ where: { slug } });
+		const cityExist = await models.City.findOne({
+			include: ["countries"],
+			where: { slug },
+		});
 
 		if (cityExist) {
 			return res.status(409).json({ message: "City already exist" });

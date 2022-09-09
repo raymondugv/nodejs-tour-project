@@ -20,7 +20,9 @@ const options = {
 
 exports.index = async (req, res) => {
 	try {
-		let tours = await models.Tour.findAll(options);
+		let tours = await models.Tour.findAll({
+			options: options,
+		});
 
 		if (req.user.roleId !== 1) {
 			tours = tours.filter((tour) => tour.owner === req.user.id);
