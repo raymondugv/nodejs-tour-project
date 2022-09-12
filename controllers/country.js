@@ -8,7 +8,10 @@ const options = {
 
 exports.index = async (req, res) => {
 	try {
-		const countries = await models.Country.findAll(options);
+		const countries = await models.Country.findAll({
+			options: options,
+			include: "cities",
+		});
 		return res.status(200).json({ countries });
 	} catch (err) {
 		return res.status(500).json({ error: err.message });
@@ -20,6 +23,7 @@ exports.show = async (req, res) => {
 		const country = await models.Country.findOne({
 			where: { id: req.params.id },
 			...options,
+			include: "cities",
 		});
 
 		return res.status(200).json({ country });

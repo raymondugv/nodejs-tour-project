@@ -88,7 +88,10 @@ exports.logout = async (req, res) => {
 // index
 exports.index = async (req, res) => {
 	try {
-		let users = await models.User.findAll(options);
+		let users = await models.User.findAll({
+			options,
+			include: "role",
+		});
 
 		return res.status(200).json({ users });
 	} catch (error) {
