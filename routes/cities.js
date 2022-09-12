@@ -18,8 +18,6 @@ async function setCity(req, res, next) {
 
 		if (!city) {
 			res.status(404).json({ message: "City not found" });
-
-			return next();
 		}
 
 		req.item = city.dataValues;

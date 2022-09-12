@@ -1,24 +1,13 @@
-const {
-	canViewItem,
-	canDeleteItem,
-	canEditItem,
-	canActiveItem,
-} = require("../permissions/general");
-
 const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 
 module.exports = (req, res, next) => {
-	// const condition =
-	// 	canActiveItem(req.user, req.body) ||
-	// 	canViewItem(req.user, req.item) ||
-	// 	canEditItem(req.user, req.item) ||
-	// 	canDeleteItem(req.user, req.item);
-
 	const permission = PERMISSION.find((item) => {
+		// check if the endpoint is in the permission table
 		return item.table_name.includes(req.endpoint);
 	});
 
 	const permission_role = PERMISSION_ROLE.find((item) => {
+		// check if the user role is in the permission_role table
 		return (
 			item.permission_id === permission.id &&
 			item.role_id === req.user.roleId
