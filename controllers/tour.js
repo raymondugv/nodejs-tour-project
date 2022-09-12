@@ -101,7 +101,7 @@ exports.create = async (req, res) => {
 			categories: req.body.categories,
 		});
 
-		await tour.addCategory(req.body.categories);
+		// await tour.addCategory(req.body.categories);
 
 		return res
 			.status(201)
