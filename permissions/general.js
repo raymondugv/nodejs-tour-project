@@ -1,4 +1,10 @@
-const { ROLE, PERMISSION_ROLE, ACTIVE_FIELD } = require("../config/data");
+const {
+	ROLE,
+	PERMISSION,
+	PERMISSION_ROLE,
+	ACTIVE_FIELD,
+} = require("../config/data");
+
 const isOwner = (user, item) => {
 	if (item) {
 		return item.owner === user.id;
