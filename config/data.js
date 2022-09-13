@@ -1,24 +1,100 @@
-const ROLE = {
-	ADMIN: 1,
-	OWNER: 2,
-	USER: 3,
-	EDITOR: 4,
-};
+const ROLE = [
+	{ id: 1, name: "Admin" },
+	{ id: 2, name: "Owner" },
+	{ id: 3, name: "User" },
+	{ id: 4, name: "Editor" },
+];
 
-const PERMISSION = {
-	CREATE: 1,
-	UPDATE: 2,
-	DELETE: 3,
-	ACTIVE: 4,
-};
+const PERMISSION = [
+	{
+		id: 1,
+		key: "create",
+		table_name: [
+			"users",
+			"roles",
+			"permissions",
+			"cities",
+			"tours",
+			"countries",
+		],
+	},
+	{
+		id: 2,
+		key: "read",
+		table_name: [
+			"users",
+			"roles",
+			"permissions",
+			"cities",
+			"tours",
+			"countries",
+		],
+	},
+	{
+		id: 3,
+		key: "update",
+		table_name: [
+			"users",
+			"roles",
+			"permissions",
+			"cities",
+			"tours",
+			"countries",
+		],
+	},
+	{
+		id: 4,
+		key: "delete",
+		table_name: [
+			"users",
+			"roles",
+			"permissions",
+			"cities",
+			"tours",
+			"countries",
+		],
+	},
+	{
+		id: 5,
+		key: "active",
+		table_name: ["tours"],
+	},
+];
 
-const PERMISSION_ROLE = {
-	READ: [ROLE.ADMIN, ROLE.OWNER],
-	CREATE: [ROLE.ADMIN, ROLE.OWNER],
-	UPDATE: [ROLE.ADMIN, ROLE.OWNER],
-	DELETE: [ROLE.OWNER],
-	ACTIVE: [ROLE.EDITOR],
-};
+const PERMISSION_ROLE = [
+	{
+		permission_id: 1,
+		role_id: 1,
+	},
+	{
+		permission_id: 2,
+		role_id: 1,
+	},
+	{
+		permission_id: 3,
+		role_id: 1,
+	},
+	{
+		permission_id: 1,
+		role_id: 2,
+	},
+	{
+		permission_id: 2,
+		role_id: 2,
+	},
+	{
+		permission_id: 3,
+		role_id: 2,
+	},
+	{
+		permission_id: 4,
+		role_id: 2,
+	},
+	{
+		permission_id: 5,
+		role_id: 4,
+	},
+];
 
 const ACTIVE_FIELD = ["active", "status", "public", "published", "publish"];
 

@@ -1,13 +1,13 @@
 "use strict";
 module.exports = {
 	async up(queryInterface, Sequelize) {
-		await queryInterface.createTable("ToursCategories", {
-			category_id: {
+		await queryInterface.createTable("PermissionRoles", {
+			permission_id: {
 				allowNull: false,
 				primaryKey: true,
 				type: Sequelize.INTEGER,
 			},
-			tour_id: {
+			role_id: {
 				allowNull: false,
 				primaryKey: true,
 				type: Sequelize.INTEGER,
@@ -15,6 +15,6 @@ module.exports = {
 		});
 	},
 	async down(queryInterface, Sequelize) {
-		await queryInterface.dropTable("ToursCategories");
+		await queryInterface.dropTable("PermissionRoles");
 	},
 };

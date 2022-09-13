@@ -1,22 +1,27 @@
-const {
-	canViewItem,
-	canDeleteItem,
-	canEditItem,
-	canActiveItem,
-} = require("../permissions/general");
+const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 
-module.exports = (req, res, next) => {
-	const condition =
-		canViewItem(req.user, req.item) ||
-		canEditItem(req.user, req.item) ||
-		canDeleteItem(req.user, req.item) ||
-		canActiveItem(req.user, req.body);
+const verifyRoles = (action) => {
+	return (req, res, next) => {
+		const { user, endpoint } = req;
 
-	if (!condition) {
-		return res.status(403).json({
-			error: "You do not have permission to perform this action.",
-		});
-	}
+		const permission = PERMISSION.map(
+			(item) => item.key == action && item.table_name.includes(endpoint)
+		).find((val) => val === true);
 
-	next();
+		const permissionRole = PERMISSION_ROLE.map(
+			(item) =>
+				item.permission_id == permission && item.role_id == user.roleId
+		).find((val) => val === true);
+
+		// res.json({ permission, permissionRole });
+
+		if (!permission || !permissionRole)
+			res.status(403).json({
+				error: "You don't have permission to perform this action.",
+			});
+
+		next();
+	};
 };
+
+module.exports = verifyRoles;
