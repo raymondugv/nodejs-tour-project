@@ -1,5 +1,6 @@
 const models = require("../models");
 const joi = require("joi");
+const category = require("../models/category");
 
 const options = {
 	raw: true,
@@ -78,6 +79,7 @@ exports.create = async (req, res) => {
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
 			owner: joi.number(),
+			categories: joi.array(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -96,7 +98,10 @@ exports.create = async (req, res) => {
 			departure: departure,
 			arrival: arrival,
 			owner: req.user.id,
+			categories: req.body.categories,
 		});
+
+		// await tour.addCategory(req.body.categories);
 
 		return res
 			.status(201)
