@@ -5,11 +5,11 @@ const permission = require("../middleware/permission");
 const models = require("../models");
 
 /* GET users listing. */
-router.get("/", permission, controllers.index);
-router.get("/:id", setUser, permission, controllers.show);
-router.post("/", setUser, permission, controllers.create);
-router.put("/:id", setUser, permission, controllers.update);
-router.delete("/:id", setUser, permission, controllers.delete);
+router.get("/", controllers.index);
+router.get("/:id", setUser, permission("read"), controllers.show);
+router.post("/", setUser, permission("create"), controllers.create);
+router.put("/:id", setUser, permission("update"), controllers.update);
+router.delete("/:id", setUser, permission("delete"), controllers.delete);
 
 async function setUser(req, res, next) {
 	if (req.params.id) {

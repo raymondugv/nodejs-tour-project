@@ -1,24 +1,27 @@
 const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 
-module.exports = (req, res, next) => {
-	const permission = PERMISSION.find((item) => {
-		// check if the endpoint is in the permission table
-		return item.table_name.includes(req.endpoint);
-	});
+const verifyRoles = (action) => {
+	return (req, res, next) => {
+		const { user, endpoint } = req;
 
-	const permission_role = PERMISSION_ROLE.find((item) => {
-		// check if the user role is in the permission_role table
-		return (
-			item.permission_id === permission.id &&
-			item.role_id === req.user.roleId
-		);
-	});
+		const permission = PERMISSION.map(
+			(item) => item.key == action && item.table_name.includes(endpoint)
+		).find((val) => val === true);
 
-	if (!permission || !permission_role) {
-		return res.status(403).json({
-			error: "You do not have permission to perform this action.",
-		});
-	}
+		const permissionRole = PERMISSION_ROLE.map(
+			(item) =>
+				item.permission_id == permission && item.role_id == user.roleId
+		).find((val) => val === true);
 
-	next();
+		// res.json({ permission, permissionRole });
+
+		if (!permission || !permissionRole)
+			res.status(403).json({
+				error: "You don't have permission to perform this action.",
+			});
+
+		next();
+	};
 };
+
+module.exports = verifyRoles;
