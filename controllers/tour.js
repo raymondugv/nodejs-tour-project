@@ -99,9 +99,9 @@ exports.create = async (req, res) => {
 			arrival: arrival,
 			owner: req.user.id,
 			categories: req.body.categories,
+		}).then((tour) => {
+			tour.setCategories(req.body.categories);
 		});
-
-		// await tour.addCategory(req.body.categories);
 
 		return res
 			.status(201)

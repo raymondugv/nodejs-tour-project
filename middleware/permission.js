@@ -2,7 +2,8 @@ const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 
 const verifyRoles = (action) => {
 	return (req, res, next) => {
-		const { user, endpoint } = req;
+		const user = req.user;
+		const endpoint = req.originalUrl.split("/")[1];
 
 		const permission = PERMISSION.map(
 			(item) => item.key == action && item.table_name.includes(endpoint)
@@ -13,14 +14,12 @@ const verifyRoles = (action) => {
 				item.permission_id == permission && item.role_id == user.roleId
 		).find((val) => val === true);
 
-		// res.json({ permission, permissionRole });
-
 		if (!permission || !permissionRole)
-			res.status(403).json({
+			return res.status(403).json({
 				error: "You don't have permission to perform this action.",
 			});
 
-		next();
+		return next();
 	};
 };
 

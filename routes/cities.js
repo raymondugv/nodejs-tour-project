@@ -1,30 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const permission = require("../middleware/permission");
+const verifyRoles = require("../middleware/permission");
 const controllers = require("../controllers/city");
-const models = require("../models");
 
 router.get("/", controllers.index);
-router.get("/:id", setCity, permission("read"), controllers.show);
-router.post("/", setCity, permission("create"), controllers.create);
-router.put("/:id", setCity, permission("update"), controllers.update);
-router.delete("/:id", setCity, permission("delete"), controllers.delete);
-
-async function setCity(req, res, next) {
-	if (req.params.id) {
-		const city = await models.City.findOne({
-			where: { id: req.params.id },
-		});
-
-		if (!city) {
-			res.status(404).json({ message: "City not found" });
-		}
-
-		req.item = city.dataValues;
-	}
-
-	req.endpoint = "cities";
-	next();
-}
+router.get("/:id", verifyRoles("read"), controllers.show);
+router.post("/", verifyRoles("create"), controllers.create);
+router.put("/:id", verifyRoles("update"), controllers.update);
+router.delete("/:id", verifyRoles("delete"), controllers.delete);
 
 module.exports = router;
