@@ -40,6 +40,7 @@ exports.show = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 			...options,
+			include: ["categories"],
 		});
 
 		if (!tour) {
@@ -98,10 +99,9 @@ exports.create = async (req, res) => {
 			departure: departure,
 			arrival: arrival,
 			owner: req.user.id,
-			categories: req.body.categories,
-		}).then((tour) => {
-			tour.setCategories(req.body.categories);
 		});
+
+		tour.addCategories(req.body.categories);
 
 		return res
 			.status(201)
@@ -134,6 +134,7 @@ exports.update = async (req, res) => {
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
 			owner: joi.number(),
+			categories: joi.array(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -156,6 +157,8 @@ exports.update = async (req, res) => {
 			},
 			{ where: { id: req.params.id } }
 		);
+
+		tour.setCategories(req.body.categories, "update");
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {

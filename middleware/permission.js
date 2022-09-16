@@ -1,9 +1,25 @@
 const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 
-const verifyRoles = (action) => {
+const verifyRoles = () => {
 	return (req, res, next) => {
-		const user = req.user;
-		const endpoint = req.originalUrl.split("/")[1];
+		const { user, method, originalUrl } = req;
+		const endpoint = originalUrl.split("/")[1];
+		let action = "";
+
+		switch (method) {
+			case "GET":
+				action = "read";
+				break;
+			case "POST":
+				action = "create";
+				break;
+			case "PUT":
+				action = "update";
+				break;
+			case "DELETE":
+				action = "delete";
+				break;
+		}
 
 		const permission = PERMISSION.map(
 			(item) => item.key == action && item.table_name.includes(endpoint)
