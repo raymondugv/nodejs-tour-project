@@ -163,12 +163,6 @@ exports.update = async (req, res) => {
 		});
 		tour_category.setCategories(req.body.categories);
 
-		// const update_category = models.TourCategory.findAll({
-		// 	where: { tour_id: req.params.id },
-		// }).then((category) => {
-		// 	category.setCategories(category);
-		// });
-
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
