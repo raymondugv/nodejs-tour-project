@@ -1,6 +1,5 @@
 const models = require("../models");
 const joi = require("joi");
-const category = require("../models/category");
 
 const options = {
 	raw: true,
@@ -158,7 +157,15 @@ exports.update = async (req, res) => {
 			{ where: { id: req.params.id } }
 		);
 
-		tour.setCategories(req.body.categories, "update");
+		models.categories.findOne(tour).then((product) => {
+			if (product) {
+				product.updateAttributes(req.body.categories).then((result) => {
+					return result;
+				});
+			} else {
+				return res.status(404).json({ message: "Tour not found" });
+			}
+		});
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {
