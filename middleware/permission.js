@@ -1,27 +1,44 @@
 const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 
-const verifyRoles = (action) => {
-	return (req, res, next) => {
-		const { user, endpoint } = req;
+module.exports = (req, res, next) => {
+	const { user, method, originalUrl } = req;
+	const endpoint = originalUrl.split("/")[1];
+	const url = originalUrl.split("/")[3];
 
-		const permission = PERMISSION.map(
-			(item) => item.key == action && item.table_name.includes(endpoint)
-		).find((val) => val === true);
+	let action = "";
 
-		const permissionRole = PERMISSION_ROLE.map(
-			(item) =>
-				item.permission_id == permission && item.role_id == user.roleId
-		).find((val) => val === true);
+	switch (method) {
+		case "GET":
+			action = "read";
+			break;
+		case "POST":
+			if (url == "active") {
+				action = "active";
+			} else {
+				action = "create";
+			}
+			break;
+		case "PUT":
+			action = "update";
+			break;
+		case "DELETE":
+			action = "delete";
+			break;
+	}
 
-		// res.json({ permission, permissionRole });
+	const permission = PERMISSION.map(
+		(item) => item.key == action && item.table_name.includes(endpoint)
+	).find((val) => val === true);
 
-		if (!permission || !permissionRole)
-			res.status(403).json({
-				error: "You don't have permission to perform this action.",
-			});
+	const permissionRole = PERMISSION_ROLE.map(
+		(item) =>
+			item.permission_id == permission && item.role_id == user.roleId
+	).find((val) => val === true);
 
-		next();
-	};
+	if (!permission || !permissionRole)
+		return res.status(403).json({
+			error: "You don't have permission to perform this action.",
+		});
+
+	return next();
 };
-
-module.exports = verifyRoles;

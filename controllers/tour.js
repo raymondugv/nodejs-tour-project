@@ -1,6 +1,5 @@
 const models = require("../models");
 const joi = require("joi");
-const category = require("../models/category");
 
 const options = {
 	raw: true,
@@ -40,6 +39,7 @@ exports.show = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 			...options,
+			include: ["categories"],
 		});
 
 		if (!tour) {
@@ -98,10 +98,9 @@ exports.create = async (req, res) => {
 			departure: departure,
 			arrival: arrival,
 			owner: req.user.id,
-			categories: req.body.categories,
 		});
 
-		// await tour.addCategory(req.body.categories);
+		tour.addCategories(req.body.categories);
 
 		return res
 			.status(201)
@@ -134,6 +133,7 @@ exports.update = async (req, res) => {
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
 			owner: joi.number(),
+			categories: joi.array(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -154,8 +154,14 @@ exports.update = async (req, res) => {
 				arrival: arrival,
 				owner: req.user.id,
 			},
-			{ where: { id: req.params.id } }
+			{ where: { id: req.params.id } },
+			{ include: ["categories"] }
 		);
+
+		const tour_category = await models.Tour.findOne({
+			where: { id: req.params.id },
+		});
+		tour_category.setCategories(req.body.categories);
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {
