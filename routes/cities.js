@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const verifyRoles = require("../middleware/permission_new");
+const verifyRoles = require("../middleware/permission");
 const controllers = require("../controllers/city");
 
 router.get("/", controllers.index);
