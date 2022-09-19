@@ -3,6 +3,8 @@ const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
 module.exports = (req, res, next) => {
 	const { user, method, originalUrl } = req;
 	const endpoint = originalUrl.split("/")[1];
+	const url = originalUrl.split("/")[3];
+
 	let action = "";
 
 	switch (method) {
@@ -10,7 +12,11 @@ module.exports = (req, res, next) => {
 			action = "read";
 			break;
 		case "POST":
-			action = "create";
+			if (url == "active") {
+				action = "active";
+			} else {
+				action = "create";
+			}
 			break;
 		case "PUT":
 			action = "update";
