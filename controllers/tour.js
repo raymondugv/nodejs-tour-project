@@ -154,18 +154,20 @@ exports.update = async (req, res) => {
 				arrival: arrival,
 				owner: req.user.id,
 			},
-			{ where: { id: req.params.id } }
+			{ where: { id: req.params.id } },
+			{ include: ["categories"] }
 		);
 
-		models.categories.findOne(tour).then((product) => {
-			if (product) {
-				product.updateAttributes(req.body.categories).then((result) => {
-					return result;
-				});
-			} else {
-				return res.status(404).json({ message: "Tour not found" });
-			}
+		const tour_category = await models.Tour.findOne({
+			where: { id: req.params.id },
 		});
+		tour_category.setCategories(req.body.categories);
+
+		// const update_category = models.TourCategory.findAll({
+		// 	where: { tour_id: req.params.id },
+		// }).then((category) => {
+		// 	category.setCategories(category);
+		// });
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {
