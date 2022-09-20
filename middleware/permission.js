@@ -26,13 +26,13 @@ module.exports = (req, res, next) => {
 			break;
 	}
 
-	const permission = PERMISSION.map(
-		(item) => item.key == action && item.table_name.includes(endpoint)
-	).find((val) => val === true);
+	const permission = PERMISSION.find((item) => {
+		return item.key == action && item.table_name.includes(endpoint);
+	});
 
 	const permissionRole = PERMISSION_ROLE.map(
 		(item) =>
-			item.permission_id == permission && item.role_id == user.roleId
+			item.permission_id == permission.id && item.role_id == user.roleId
 	).find((val) => val === true);
 
 	if (!permission || !permissionRole)

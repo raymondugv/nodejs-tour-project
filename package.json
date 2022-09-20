@@ -1,6 +1,6 @@
 {
 	"name": "tour-project",
-	"version": "1.4.2",
+	"version": "1.4.3",
 	"private": true,
 	"scripts": {
 		"initDB": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
