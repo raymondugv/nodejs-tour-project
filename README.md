@@ -28,7 +28,4 @@ npm run initDB
 
 # start the project
 npm run start
-
-# to test the project
-npm test
 ```
