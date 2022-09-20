@@ -1,5 +1,6 @@
 const models = require("../models");
 const joi = require("joi");
+const fs = require("fs");
 
 const options = {
 	raw: true,
@@ -148,6 +149,16 @@ exports.update = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
+		const tour_category = await models.Tour.findOne({
+			where: { id: req.params.id },
+		});
+
+		const old_image = tour_category.image;
+
+		if (image) {
+			fs.unlinkSync(old_image);
+		}
+
 		const tour = await models.Tour.update(
 			{
 				title: title,
@@ -164,9 +175,6 @@ exports.update = async (req, res) => {
 			{ include: ["categories"] }
 		);
 
-		const tour_category = await models.Tour.findOne({
-			where: { id: req.params.id },
-		});
 		tour_category.setCategories(req.body.categories);
 
 		return res.status(200).json({ message: "Tour updated successfully" });
@@ -199,6 +207,7 @@ exports.delete = async (req, res) => {
 		});
 
 		if (req.user.roleId === tour.owner) {
+			fs.unlinkSync(tour.image);
 			await tour.destroy();
 			return res
 				.status(200)
