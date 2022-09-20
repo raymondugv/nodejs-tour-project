@@ -1,5 +1,6 @@
 const models = require("../models");
 const joi = require("joi");
+const fs = require("fs");
 
 const options = {
 	raw: true,
@@ -62,18 +63,19 @@ exports.create = async (req, res) => {
 			title,
 			slug,
 			description,
-			image,
 			price,
 			departure_date,
 			departure,
 			arrival,
 		} = req.body;
 
+		let image = req.file;
+
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			slug: joi.string().required(),
 			description: joi.string().required(),
-			image: joi.string().required(),
+			image: joi.string().dataUri(),
 			price: joi.number().required(),
 			departure_date: joi.date().required(),
 			departure: joi.number().required(),
@@ -88,11 +90,15 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
+		if (!req.file) {
+			res.status(401).json({ error: "Please provide an image" });
+		}
+
 		const tour = await models.Tour.create({
 			title: title,
 			slug: slug,
 			description: description,
-			image: image,
+			image: image.path,
 			price: price,
 			departure_date: departure_date,
 			departure: departure,
@@ -116,18 +122,19 @@ exports.update = async (req, res) => {
 			title,
 			slug,
 			description,
-			image,
 			price,
 			departure_date,
 			departure,
 			arrival,
 		} = req.body;
 
+		let image = req.file;
+
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			slug: joi.string().required(),
 			description: joi.string().required(),
-			image: joi.string().required(),
+			image: joi.string(),
 			price: joi.number().required(),
 			departure_date: joi.date().required(),
 			departure: joi.number().required(),
@@ -142,12 +149,22 @@ exports.update = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
+		const tour_category = await models.Tour.findOne({
+			where: { id: req.params.id },
+		});
+
+		const old_image = tour_category.image;
+
+		if (image) {
+			fs.unlinkSync(old_image);
+		}
+
 		const tour = await models.Tour.update(
 			{
 				title: title,
 				slug: slug,
 				description: description,
-				image: image,
+				image: image.path,
 				price: price,
 				departure_date: departure_date,
 				departure: departure,
@@ -158,9 +175,6 @@ exports.update = async (req, res) => {
 			{ include: ["categories"] }
 		);
 
-		const tour_category = await models.Tour.findOne({
-			where: { id: req.params.id },
-		});
 		tour_category.setCategories(req.body.categories);
 
 		return res.status(200).json({ message: "Tour updated successfully" });
@@ -173,7 +187,7 @@ exports.active = async (req, res) => {
 	try {
 		let { status } = req.body;
 
-		const tour = await models.Tour.update(
+		const tourUpdate = await models.Tour.update(
 			{
 				status: status,
 			},
@@ -193,7 +207,8 @@ exports.delete = async (req, res) => {
 		});
 
 		if (req.user.roleId === tour.owner) {
-			await models.Tour.destroy({ where: { id: req.params.id } });
+			fs.unlinkSync(tour.image);
+			await tour.destroy();
 			return res
 				.status(200)
 				.json({ message: "Tour deleted successfully" });

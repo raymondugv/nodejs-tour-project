@@ -88,6 +88,10 @@ const PERMISSION_ROLE = [
 	},
 	{
 		permission_id: 4,
+		role_id: 1,
+	},
+	{
+		permission_id: 4,
 		role_id: 2,
 	},
 	{
