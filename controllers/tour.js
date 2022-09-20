@@ -1,6 +1,5 @@
 const models = require("../models");
 const joi = require("joi");
-const Resize = require("../config/resize");
 
 const options = {
 	raw: true,
@@ -90,20 +89,15 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		const imagePath = path.json(__dirname, "../public/images/");
-		const fileUpload = new Resize(imagePath);
-
 		if (!req.file) {
 			res.status(401).json({ error: "Please provide an image" });
 		}
-
-		const filename = await fileUpload.save(image);
 
 		const tour = await models.Tour.create({
 			title: title,
 			slug: slug,
 			description: description,
-			image: filename,
+			image: image.path,
 			price: price,
 			departure_date: departure_date,
 			departure: departure,
