@@ -1,5 +1,6 @@
 const models = require("../models");
 const joi = require("joi");
+const Resize = require("../config/resize");
 
 const options = {
 	raw: true,
@@ -62,18 +63,19 @@ exports.create = async (req, res) => {
 			title,
 			slug,
 			description,
-			image,
 			price,
 			departure_date,
 			departure,
 			arrival,
 		} = req.body;
 
+		let image = req.file;
+
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			slug: joi.string().required(),
 			description: joi.string().required(),
-			image: joi.string().required(),
+			image: joi.string().dataUri(),
 			price: joi.number().required(),
 			departure_date: joi.date().required(),
 			departure: joi.number().required(),
@@ -88,11 +90,20 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
+		const imagePath = path.json(__dirname, "../public/images/");
+		const fileUpload = new Resize(imagePath);
+
+		if (!req.file) {
+			res.status(401).json({ error: "Please provide an image" });
+		}
+
+		const filename = await fileUpload.save(image);
+
 		const tour = await models.Tour.create({
 			title: title,
 			slug: slug,
 			description: description,
-			image: image,
+			image: filename,
 			price: price,
 			departure_date: departure_date,
 			departure: departure,
