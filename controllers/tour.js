@@ -20,7 +20,9 @@ const options = {
 
 exports.index = async (req, res) => {
 	try {
-		let tours = await models.Tour.findAll(options);
+		let tours = await models.Tour.findAll({
+			options: options,
+		});
 
 		if (req.user.roleId !== 1) {
 			tours = tours.filter((tour) => tour.owner === req.user.id);
@@ -37,6 +39,7 @@ exports.show = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 			...options,
+			include: ["categories"],
 		});
 
 		if (!tour) {
@@ -76,6 +79,7 @@ exports.create = async (req, res) => {
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
 			owner: joi.number(),
+			categories: joi.array(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -95,6 +99,8 @@ exports.create = async (req, res) => {
 			arrival: arrival,
 			owner: req.user.id,
 		});
+
+		tour.addCategories(req.body.categories);
 
 		return res
 			.status(201)
@@ -127,6 +133,7 @@ exports.update = async (req, res) => {
 			departure: joi.number().required(),
 			arrival: joi.number().required(),
 			owner: joi.number(),
+			categories: joi.array(),
 		});
 
 		const { error, value } = schema.validate(req.body);
@@ -147,8 +154,14 @@ exports.update = async (req, res) => {
 				arrival: arrival,
 				owner: req.user.id,
 			},
-			{ where: { id: req.params.id } }
+			{ where: { id: req.params.id } },
+			{ include: ["categories"] }
 		);
+
+		const tour_category = await models.Tour.findOne({
+			where: { id: req.params.id },
+		});
+		tour_category.setCategories(req.body.categories);
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {

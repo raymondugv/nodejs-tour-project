@@ -7,12 +7,7 @@ const {
 	ACTIVE_FIELD,
 } = require("../config/data");
 
-const {
-	canViewItem,
-	canDeleteItem,
-	canEditItem,
-	canActiveItem,
-} = require("../permissions/general");
+const { canActiveItem } = require("../permissions/general");
 
 router.get("/", (req, res, next) => {
 	return res.json({ ROLE, PERMISSION, PERMISSION_ROLE });
