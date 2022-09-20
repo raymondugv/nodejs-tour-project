@@ -12,19 +12,25 @@ module.exports = {
 		 * }], {});
 		 */
 		await queryInterface.bulkInsert(
-			"PaymentStatus",
+			"PaymentStatuses",
 			[
 				{
 					name: "Waiting for payment",
 					description: "Waiting for payment",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Paid",
 					description: "Payment is paid",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 				{
 					name: "Refunded",
 					description: "Payment is refunded",
+					createdAt: new Date(),
+					updatedAt: new Date(),
 				},
 			],
 			{}
@@ -38,6 +44,6 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.bulkDelete('People', null, {});
 		 */
-		await queryInterface.bulkDelete("PaymentStatus", null, {});
+		await queryInterface.bulkDelete("PaymentStatuses", null, {});
 	},
 };
