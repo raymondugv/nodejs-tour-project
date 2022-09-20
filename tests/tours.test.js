@@ -1,87 +1,84 @@
-// const request = require("supertest");
-// const app = require("../app");
+const request = require("supertest");
+const app = require("../app");
+const formData = require("form-data");
 
-// const { login, logout } = require("../tests/auth-test");
+const { login, logout } = require("../tests/auth-test");
 
-// const random = Array(5)
-// 	.fill()
-// 	.map(() => ((Math.random() * 36) | 0).toString(36))
-// 	.join("");
+const random = Array(5)
+	.fill()
+	.map(() => ((Math.random() * 36) | 0).toString(36))
+	.join("");
 
-// const CREATE_PAYLOAD = {
-// 	title: "This is tour title " + random,
-// 	slug: "this-is-tour-slug-" + random,
-// 	description: "this is description",
-// 	image: "image",
-// 	price: 1000000,
-// 	departure_date: "2022/11/20",
-// 	departure: 1,
-// 	arrival: 1,
-// };
+let token = "";
 
-// const UPDATE_PAYLOAD = {
-// 	title: "This is tour title " + random + " updated",
-// 	slug: "this-is-tour-slug-" + random + "-updated",
-// 	description: "this is description",
-// 	image: "image",
-// 	price: 1000000,
-// 	departure_date: "2022/11/20",
-// 	departure: 1,
-// 	arrival: 1,
-// };
+describe("tour functions with admin role", () => {
+	beforeAll(async () => {
+		const response = await login("admin@email.com", "admin");
 
-// let token = "";
+		token = response.body.token;
+	});
 
-// describe("tour functions with admin role", () => {
-// 	beforeAll(async () => {
-// 		const response = await login("admin@email.com", "admin");
+	test("get all tour", async () => {
+		const response = await request(app)
+			.get("/tours")
+			.set("Authorization", `Bearer ${token}`);
 
-// 		token = response.body.token;
-// 	});
+		expect(response.statusCode).toBe(200);
+	});
 
-// 	test("get all tour", async () => {
-// 		const response = await request(app)
-// 			.get("/tours")
-// 			.set("Authorization", `Bearer ${token}`);
+	test("create tour", async () => {
+		const response = await request(app)
+			.post("/tours")
+			.field("title", "This is tour title " + random)
+			.field("slug", "this-is-tour-slug-" + random)
+			.field("description", "This is tour description " + random)
+			.field("price", 1000000)
+			.field("departure_date", "2022/11/20")
+			.field("departure", 1)
+			.field("arrival", 2)
+			.field("categories[]", 1)
+			.field("categories[]", 2)
+			.attach("image", "tests\\example.png")
+			.set("Authorization", `Bearer ${token}`);
 
-// 		expect(response.statusCode).toBe(200);
-// 	});
+		expect(response.statusCode).toBe(201);
+	});
 
-// 	test("create tour", async () => {
-// 		const response = await request(app)
-// 			.post("/tours")
-// 			.set("Authorization", `Bearer ${token}`)
-// 			.send(CREATE_PAYLOAD);
+	test("get tour by id", async () => {
+		const response = await request(app)
+			.get("/tours/1")
+			.set("Authorization", `Bearer ${token}`);
 
-// 		expect(response.statusCode).toBe(201);
-// 	});
+		expect(response.statusCode).toBe(200);
+	});
 
-// 	test("get tour by id", async () => {
-// 		const response = await request(app)
-// 			.get("/tours/1")
-// 			.set("Authorization", `Bearer ${token}`);
+	test("update tour", async () => {
+		const response = await request(app)
+			.put("/tours/1")
+			.field("title", "This is tour title update " + random)
+			.field("slug", "this-is-tour-slug-update-" + random)
+			.field("description", "This is tour description update " + random)
+			.field("price", 1000000)
+			.field("departure_date", "2022/11/20")
+			.field("departure", 1)
+			.field("arrival", 2)
+			.field("categories[]", 3)
+			.field("categories[]", 4)
+			.attach("image", "tests\\example.png")
+			.set("Authorization", `Bearer ${token}`);
 
-// 		expect(response.statusCode).toBe(200);
-// 	});
+		expect(response.statusCode).toBe(200);
+	});
 
-// 	test("update tour", async () => {
-// 		const response = await request(app)
-// 			.put("/tours/1")
-// 			.set("Authorization", `Bearer ${token}`)
-// 			.send(UPDATE_PAYLOAD);
+	test("delete tour", async () => {
+		const response = await request(app)
+			.delete("/tours/1")
+			.set("Authorization", `Bearer ${token}`);
 
-// 		expect(response.statusCode).toBe(200);
-// 	});
+		expect(response.statusCode).toBe(200);
+	});
 
-// 	test("delete tour", async () => {
-// 		const response = await request(app)
-// 			.delete("/tours/1")
-// 			.set("Authorization", `Bearer ${token}`);
-
-// 		expect(response.statusCode).toBe(200);
-// 	});
-
-// 	afterAll(async () => {
-// 		await logout(token).then((token = ""));
-// 	});
-// });
+	afterAll(async () => {
+		await logout(token).then((token = ""));
+	});
+});
