@@ -121,18 +121,19 @@ exports.update = async (req, res) => {
 			title,
 			slug,
 			description,
-			image,
 			price,
 			departure_date,
 			departure,
 			arrival,
 		} = req.body;
 
+		let image = req.file;
+
 		const schema = joi.object().keys({
 			title: joi.string().required(),
 			slug: joi.string().required(),
 			description: joi.string().required(),
-			image: joi.string().required(),
+			image: joi.string(),
 			price: joi.number().required(),
 			departure_date: joi.date().required(),
 			departure: joi.number().required(),
@@ -152,7 +153,7 @@ exports.update = async (req, res) => {
 				title: title,
 				slug: slug,
 				description: description,
-				image: image,
+				image: image.path,
 				price: price,
 				departure_date: departure_date,
 				departure: departure,
@@ -178,7 +179,7 @@ exports.active = async (req, res) => {
 	try {
 		let { status } = req.body;
 
-		const tour = await models.Tour.update(
+		const tourUpdate = await models.Tour.update(
 			{
 				status: status,
 			},
@@ -198,7 +199,7 @@ exports.delete = async (req, res) => {
 		});
 
 		if (req.user.roleId === tour.owner) {
-			await models.Tour.destroy({ where: { id: req.params.id } });
+			await tour.destroy();
 			return res
 				.status(200)
 				.json({ message: "Tour deleted successfully" });
