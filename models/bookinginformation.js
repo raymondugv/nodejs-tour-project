@@ -1,5 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
+const booking_code = require("../config/booking_reference");
+
 module.exports = (sequelize, DataTypes) => {
 	class BookingInformation extends Model {
 		/**
@@ -8,7 +10,37 @@ module.exports = (sequelize, DataTypes) => {
 		 * The `models/index` file will call this method automatically.
 		 */
 		static associate(models) {
-			// define association here
+			this.belongsTo(models.BookingStatus, {
+				as: "booking",
+				foreignKey: "booking_status",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
+
+			this.belongsTo(models.PaymentStatus, {
+				as: "payment",
+				foreignKey: "payment_status",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
+
+			this.belongsTo(models.CustomerInformation, {
+				as: "customer",
+				foreignKey: "customer_id",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
+
+			this.belongsTo(models.Tour, {
+				as: "tour",
+				foreignKey: "tour_id",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
 		}
 	}
 	BookingInformation.init(
@@ -17,11 +49,21 @@ module.exports = (sequelize, DataTypes) => {
 			tour_id: DataTypes.INTEGER,
 			customer_id: DataTypes.INTEGER,
 			number_of_pax: DataTypes.INTEGER,
-			departure_date: DataTypes.DATE,
+			departure_date: {
+				type: DataTypes.DATEONLY,
+			},
 			booking_status: DataTypes.INTEGER,
 			payment_status: DataTypes.INTEGER,
 		},
 		{
+			hooks: {
+				beforeFindAfterExpandIncludeAll: (options) => {
+					console.log(options);
+				},
+				beforeCreate: (booking, options) => {
+					booking.booking_number = booking_code();
+				},
+			},
 			sequelize,
 			modelName: "BookingInformation",
 		}
