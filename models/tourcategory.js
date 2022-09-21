@@ -17,6 +17,13 @@ module.exports = (sequelize, DataTypes) => {
 			tour_id: DataTypes.INTEGER,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.attributes = {
+						exclude: ["createdAt", "updatedAt"],
+					};
+				},
+			},
 			sequelize,
 			modelName: "TourCategory",
 			tableName: "tourscategories",

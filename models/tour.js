@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			hooks: {
-				beforeFindAfterExpandIncludeAll: (options) => {
+				beforeFind: (options) => {
 					options.attributes = {
 						exclude: ["createdAt", "updatedAt"],
 					};
