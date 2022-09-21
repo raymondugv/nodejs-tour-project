@@ -32,6 +32,10 @@ app.use("/users", auth, require("./routes/users"));
 app.use("/countries", auth, require("./routes/countries"));
 app.use("/cities", auth, require("./routes/cities"));
 app.use("/tours", auth, require("./routes/tours"));
-app.use("/roles-data", auth, require("./routes/roles-data"));
+app.use(
+	"/booking-informations",
+	auth,
+	require("./routes/booking-informations")
+);
 
 module.exports = app;
