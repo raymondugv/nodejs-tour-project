@@ -16,6 +16,7 @@ const PERMISSION = [
 			"cities",
 			"tours",
 			"countries",
+			"booking-informations",
 		],
 	},
 	{
@@ -28,6 +29,7 @@ const PERMISSION = [
 			"cities",
 			"tours",
 			"countries",
+			"booking-informations",
 		],
 	},
 	{
@@ -40,6 +42,7 @@ const PERMISSION = [
 			"cities",
 			"tours",
 			"countries",
+			"booking-informations",
 		],
 	},
 	{
@@ -52,6 +55,7 @@ const PERMISSION = [
 			"cities",
 			"tours",
 			"countries",
+			"booking-informations",
 		],
 	},
 	{
