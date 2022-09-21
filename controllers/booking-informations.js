@@ -12,7 +12,11 @@ const options = {
 	],
 };
 
-const include = { all: true, nested: true };
+const include = {
+	all: true,
+	nested: true,
+	attributes: { exclude: ["createdAt", "updatedAt"] },
+};
 
 exports.index = async (req, res) => {
 	try {
@@ -41,8 +45,7 @@ exports.show = async (req, res) => {
 
 exports.create = async (req, res) => {
 	try {
-		const { tour_id, customer_id, number_of_pax, departure_date } =
-			req.body;
+		const data = req.body;
 
 		const schema = joi.object().keys({
 			tour_id: joi.number().required(),
@@ -56,6 +59,8 @@ exports.create = async (req, res) => {
 		if (error) {
 			return res.status(400).json({ error });
 		}
+
+		const { tour_id, customer_id, number_of_pax, departure_date } = data;
 
 		const bookingCreate = await models.BookingInformation.create({
 			tour_id,
