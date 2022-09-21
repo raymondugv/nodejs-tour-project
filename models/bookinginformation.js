@@ -57,9 +57,6 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{
 			hooks: {
-				beforeFindAfterExpandIncludeAll: (options) => {
-					console.log(options);
-				},
 				beforeCreate: (booking, options) => {
 					booking.booking_number = booking_code();
 				},
