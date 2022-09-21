@@ -9,6 +9,8 @@ const options = {
 		"customer_id",
 		"number_of_pax",
 		"departure_date",
+		"createdAt",
+		"updatedAt",
 	],
 };
 
