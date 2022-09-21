@@ -102,9 +102,31 @@ const PERMISSION_ROLE = [
 
 const ACTIVE_FIELD = ["active", "status", "public", "published", "publish"];
 
+const BOOKING_STATUS = {
+	NEW_BOOKING: "1",
+	PROCESSING: "2",
+	CONFIRMED: "3",
+	CANCELLED: "4",
+	COMPLETED: "5",
+};
+
+const PAYMENT_STATUS = {
+	WAITING_FOR_PAYMENT: "1",
+	PAID: "2",
+	REFUNDED: "3",
+};
+
+const GENDER = {
+	MALE: "0",
+	FEMALE: "1",
+};
+
 module.exports = {
 	ROLE: ROLE,
 	PERMISSION: PERMISSION,
 	PERMISSION_ROLE: PERMISSION_ROLE,
 	ACTIVE_FIELD: ACTIVE_FIELD,
+	BOOKING_STATUS: BOOKING_STATUS,
+	PAYMENT_STATUS: PAYMENT_STATUS,
+	GENDER: GENDER,
 };
