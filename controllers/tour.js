@@ -19,6 +19,12 @@ const options = {
 	],
 };
 
+const include = {
+	all: true,
+	nested: true,
+	attributes: { exclude: ["createdAt", "updatedAt"] },
+};
+
 exports.index = async (req, res) => {
 	try {
 		let tours = await models.Tour.findAll({
@@ -40,7 +46,7 @@ exports.show = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 			...options,
-			include: ["categories"],
+			include: include,
 		});
 
 		if (!tour) {
@@ -172,7 +178,7 @@ exports.update = async (req, res) => {
 				owner: req.user.id,
 			},
 			{ where: { id: req.params.id } },
-			{ include: ["categories"] }
+			{ include: include }
 		);
 
 		tour_category.setCategories(req.body.categories);
