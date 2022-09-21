@@ -10,9 +10,7 @@ module.exports = {
 				primaryKey: true,
 				type: Sequelize.INTEGER,
 			},
-			booking_number: {
-				type: Sequelize.UUID,
-			},
+			booking_number: Sequelize.STRING,
 			tour_id: {
 				type: Sequelize.INTEGER,
 			},
@@ -23,7 +21,7 @@ module.exports = {
 				type: Sequelize.INTEGER,
 			},
 			departure_date: {
-				type: Sequelize.DATE,
+				type: Sequelize.DATEONLY,
 			},
 			booking_status: {
 				type: Sequelize.ENUM,
