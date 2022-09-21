@@ -3,10 +3,9 @@ const joi = require("joi");
 
 const options = {
 	raw: true,
-	attributes: ["id", "name", "description", "slug", "country"],
+	attributes: ["id", "name", "email", "gender"],
 };
 
-// index
 exports.index = async (req, res) => {
 	try {
 		const customers = await models.CustomerInformation.findAll({
@@ -24,6 +23,11 @@ exports.show = async (req, res) => {
 			where: { id: req.params.id },
 			...options,
 		});
+
+		if (!customer) {
+			return res.status(404).json({ error: "Customer not found" });
+		}
+
 		return res.status(200).json({ customer });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -35,9 +39,9 @@ exports.create = async (req, res) => {
 		const data = req.body;
 		const schema = joi.object().keys({
 			name: joi.string().required(),
-			country: joi.number().required(),
-			slug: joi.string().required(),
-			description: joi.string(),
+			email: joi.string().email().required(),
+			gender: joi.number().required(),
+			phone: joi.string().required(),
 		});
 
 		const { error, value } = schema.validate(data);
@@ -46,20 +50,13 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		let { name, country, slug, description } = data;
-		const cityExist = await models.CustomerInformation.findOne({
-			where: { slug },
-		});
-
-		if (cityExist) {
-			return res.status(409).json({ message: "Customer already exist" });
-		}
+		let { name, email, gender, phone } = data;
 
 		const customerCreate = await models.CustomerInformation.create({
-			name: name,
-			country: country,
-			slug: slug,
-			description: description,
+			name,
+			email,
+			phone,
+			gender,
 		});
 
 		return res
@@ -75,9 +72,9 @@ exports.update = async (req, res) => {
 		const data = req.body;
 		const schema = joi.object().keys({
 			name: joi.string().required(),
-			country: joi.number().required(),
-			slug: joi.string().required(),
-			description: joi.string(),
+			email: joi.string().email().required(),
+			gender: joi.number().required(),
+			phone: joi.string().required(),
 		});
 
 		const { error, value } = schema.validate(data);
@@ -86,21 +83,14 @@ exports.update = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		let { name, country, slug, description } = data;
-		const cityExist = await models.CustomerInformation.findOne({
-			where: { slug },
-		});
-
-		if (cityExist) {
-			return res.status(409).json({ message: "Customer already exist" });
-		}
+		let { name, email, phone, gender } = data;
 
 		const customerUpdate = await models.CustomerInformation.update(
 			{
-				name: name,
-				country: country,
-				slug: slug,
-				description: description,
+				name,
+				email,
+				phone,
+				gender,
 			},
 			{ where: { id: req.params.id } }
 		);
