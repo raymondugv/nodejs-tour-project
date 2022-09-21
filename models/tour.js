@@ -14,6 +14,22 @@ module.exports = (sequelize, DataTypes) => {
 				through: "tourscategories",
 				as: "categories",
 			});
+
+			this.belongsTo(models.City, {
+				as: "departureCity",
+				foreignKey: "departure",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
+
+			this.belongsTo(models.City, {
+				as: "arrivalCity",
+				foreignKey: "arrival",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
 		}
 	}
 	Tour.init(
@@ -29,6 +45,13 @@ module.exports = (sequelize, DataTypes) => {
 			owner: DataTypes.INTEGER,
 		},
 		{
+			hooks: {
+				beforeFindAfterExpandIncludeAll: (options) => {
+					options.attributes = {
+						exclude: ["createdAt", "updatedAt"],
+					};
+				},
+			},
 			sequelize,
 			modelName: "Tour",
 		}
