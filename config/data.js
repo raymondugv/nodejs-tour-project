@@ -17,6 +17,7 @@ const PERMISSION = [
 			"tours",
 			"countries",
 			"booking-informations",
+			"customer-informations",
 		],
 	},
 	{
@@ -30,6 +31,7 @@ const PERMISSION = [
 			"tours",
 			"countries",
 			"booking-informations",
+			"customer-informations",
 		],
 	},
 	{
@@ -43,6 +45,7 @@ const PERMISSION = [
 			"tours",
 			"countries",
 			"booking-informations",
+			"customer-informations",
 		],
 	},
 	{
@@ -56,6 +59,7 @@ const PERMISSION = [
 			"tours",
 			"countries",
 			"booking-informations",
+			"customer-informations",
 		],
 	},
 	{
