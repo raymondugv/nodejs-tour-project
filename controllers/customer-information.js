@@ -85,6 +85,16 @@ exports.update = async (req, res) => {
 
 		let { name, email, phone, gender } = data;
 
+		const customerExist = await models.CustomerInformation.findOne({
+			where: { email: req.params.email, phone: req.params.phone },
+		});
+
+		if (customerExist) {
+			return res
+				.status(404)
+				.json({ error: "Email or Phone already exist" });
+		}
+
 		const customerUpdate = await models.CustomerInformation.update(
 			{
 				name,
@@ -105,9 +115,16 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
 	try {
-		const customerDelete = await models.CustomerInformation.destroy({
+		const customer = await models.CustomerInformation.findOne({
 			where: { id: req.params.id },
 		});
+
+		if (!customer) {
+			return res.status(404).json({ error: "Customer not found" });
+		} else {
+			await customer.destroy();
+		}
+
 		return res
 			.status(200)
 			.json({ message: "Customer deleted successfully" });
