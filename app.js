@@ -37,5 +37,10 @@ app.use(
 	auth,
 	require("./routes/booking-informations")
 );
+app.use(
+	"/customer-informations",
+	auth,
+	require("./routes/customer-informations")
+);
 
 module.exports = app;
