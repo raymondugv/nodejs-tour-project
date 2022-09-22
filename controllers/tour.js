@@ -16,13 +16,9 @@ const options = {
 		"arrival",
 		"owner",
 		"status",
+		"createdAt",
+		"updatedAt",
 	],
-};
-
-const include = {
-	all: true,
-	nested: true,
-	attributes: { exclude: ["createdAt", "updatedAt"] },
 };
 
 exports.index = async (req, res) => {
@@ -46,12 +42,9 @@ exports.show = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 			...options,
-			include: include,
 		});
 
-		if (!tour) {
-			return res.status(404).json({ message: "Tour not found" });
-		}
+		if (!tour) return res.status(404).json({ message: "Tour not found" });
 
 		if (tour.owner !== req.user.roleId) {
 			return res.status(401).json({ message: "Unauthorized" });
@@ -96,9 +89,8 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		if (!req.file) {
+		if (!req.file)
 			res.status(401).json({ error: "Please provide an image" });
-		}
 
 		const tour = await models.Tour.create({
 			title: title,
@@ -155,17 +147,19 @@ exports.update = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		const tour_category = await models.Tour.findOne({
+		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 		});
 
-		const old_image = tour_category.image;
+		if (!tour) return res.status(404).json({ message: "Tour not found" });
+
+		const old_image = tour.image;
 
 		if (image) {
 			fs.unlinkSync(old_image);
 		}
 
-		const tour = await models.Tour.update(
+		tour.update(
 			{
 				title: title,
 				slug: slug,
@@ -177,11 +171,10 @@ exports.update = async (req, res) => {
 				arrival: arrival,
 				owner: req.user.id,
 			},
-			{ where: { id: req.params.id } },
-			{ include: include }
+			{ where: { id: req.params.id } }
 		);
 
-		tour_category.setCategories(req.body.categories);
+		tour.setCategories(req.body.categories);
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {
@@ -193,7 +186,13 @@ exports.active = async (req, res) => {
 	try {
 		let { status } = req.body;
 
-		const tourUpdate = await models.Tour.update(
+		const tour = await models.Tour.findOne({
+			where: { id: req.params.id },
+		});
+
+		if (!tour) return res.status(404).json({ message: "Tour not found" });
+
+		tour.update(
 			{
 				status: status,
 			},
@@ -211,6 +210,8 @@ exports.delete = async (req, res) => {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
 		});
+
+		if (!tour) return res.status(404).json({ message: "Tour not found" });
 
 		if (req.user.roleId === tour.owner) {
 			fs.unlinkSync(tour.image);

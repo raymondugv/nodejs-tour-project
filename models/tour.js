@@ -30,6 +30,14 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "NO ACTION",
 				constraints: false,
 			});
+
+			this.belongsTo(models.User, {
+				as: "ownerInfo",
+				foreignKey: "owner",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
 		}
 	}
 	Tour.init(
@@ -47,8 +55,17 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			hooks: {
 				beforeFind: (options) => {
-					options.attributes = {
-						exclude: ["createdAt", "updatedAt"],
+					options.include = {
+						all: true,
+						nested: true,
+						attributes: {
+							exclude: [
+								"id",
+								"createdAt",
+								"updatedAt",
+								"password",
+							],
+						},
 					};
 				},
 			},
