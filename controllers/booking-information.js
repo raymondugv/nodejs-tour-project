@@ -4,6 +4,7 @@ const joi = require("joi");
 const options = {
 	raw: true,
 	attributes: [
+		"id",
 		"booking_number",
 		"tour_id",
 		"customer_id",
@@ -39,6 +40,10 @@ exports.show = async (req, res) => {
 			...options,
 			include,
 		});
+
+		if (!booking)
+			return res.status(404).json({ message: "Booking not found" });
+
 		return res.status(200).json({ booking });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -89,6 +94,7 @@ exports.update = async (req, res) => {
 			departure_date: joi.date().required(),
 			booking_status: joi.number(),
 			payment_status: joi.number(),
+			owner: joi.number(),
 		});
 
 		const { error, value } = schema.validate(data);
@@ -106,7 +112,14 @@ exports.update = async (req, res) => {
 			payment_status,
 		} = data;
 
-		const bookingUpdate = await models.BookingInformation.update(
+		const booking = await models.BookingInformation.findOne({
+			where: { id: req.params.id },
+		});
+
+		if (!booking)
+			return res.status(404).json({ message: "Booking not found" });
+
+		booking.update(
 			{
 				tour_id,
 				customer_id,
@@ -114,6 +127,7 @@ exports.update = async (req, res) => {
 				departure_date,
 				booking_status,
 				payment_status,
+				owner: req.user.id,
 			},
 			{ where: { id: req.params.id } }
 		);
@@ -128,9 +142,19 @@ exports.update = async (req, res) => {
 
 exports.delete = async (req, res) => {
 	try {
-		const bookingDelete = await models.BookingInformation.destroy({
+		const booking = await models.BookingInformation.findOne({
 			where: { id: req.params.id },
 		});
+
+		if (!booking)
+			return res.status(404).json({ message: "Booking not found" });
+
+		if (booking.owner !== req.user.id)
+			return res.status(403).json({
+				message: "You are not authorized to delete this booking",
+			});
+
+		booking.destroy();
 
 		return res
 			.status(200)
