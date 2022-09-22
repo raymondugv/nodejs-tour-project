@@ -27,7 +27,6 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			hooks: {
 				beforeFind: (options) => {
-					options.attributes = { exclude: ["password"] };
 					options.include = {
 						all: true,
 						nested: true,
@@ -35,6 +34,14 @@ module.exports = (sequelize, DataTypes) => {
 							exclude: ["id", "createdAt", "updatedAt"],
 						},
 					};
+				},
+			},
+			defaultScope: {
+				attributes: { exclude: ["password"] },
+			},
+			scopes: {
+				withPassword: {
+					attributes: {},
 				},
 			},
 			sequelize,

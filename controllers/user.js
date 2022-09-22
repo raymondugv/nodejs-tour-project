@@ -25,14 +25,11 @@ exports.login = async (req, res) => {
 
 		const { email, password } = data;
 
-		const userExist = await models.User.findOne({
-			where: { email: email },
+		const user = await models.User.scope("withPassword").findOne({
+			where: { email },
 		});
 
-		const isPasswordMatch = await bcrypt.compare(
-			password,
-			userExist.password
-		);
+		const isPasswordMatch = await bcrypt.compare(password, user.password);
 
 		if (!isPasswordMatch) {
 			return res.status(500).json({ message: "Password is incorrect" });
@@ -40,9 +37,9 @@ exports.login = async (req, res) => {
 
 		const token = jwt.sign(
 			{
-				id: userExist.id,
-				roleId: userExist.role_id,
-				name: userExist.name,
+				id: user.id,
+				roleId: user.role_id,
+				name: user.name,
 			},
 			process.env.JWT_SECRET,
 			{
@@ -52,11 +49,6 @@ exports.login = async (req, res) => {
 
 		return res.status(200).json({
 			message: "Login successfully",
-			user: {
-				name: userExist.name,
-				email: userExist.email,
-				role_id: userExist.role_id,
-			},
 			token,
 		});
 	} catch (error) {
@@ -149,9 +141,7 @@ exports.create = async (req, res) => {
 			role_id: role_id,
 		});
 
-		return res
-			.status(201)
-			.json({ message: "User created successfully", user });
+		return res.status(201).json({ message: "User created successfully" });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
