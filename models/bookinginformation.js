@@ -41,6 +41,14 @@ module.exports = (sequelize, DataTypes) => {
 				onDelete: "NO ACTION",
 				constraints: false,
 			});
+
+			this.belongsTo(models.User, {
+				as: "ownerInfo",
+				foreignKey: "owner",
+				onUpdate: "NO ACTION",
+				onDelete: "NO ACTION",
+				constraints: false,
+			});
 		}
 	}
 	BookingInformation.init(
@@ -60,6 +68,20 @@ module.exports = (sequelize, DataTypes) => {
 			hooks: {
 				beforeCreate: (booking, options) => {
 					booking.booking_number = booking_code();
+				},
+				beforeFind: (options) => {
+					options.include = {
+						all: true,
+						nested: true,
+						attributes: {
+							exclude: [
+								"id",
+								"createdAt",
+								"updatedAt",
+								"password",
+							],
+						},
+					};
 				},
 			},
 			sequelize,

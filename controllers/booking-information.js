@@ -12,19 +12,13 @@ const options = {
 		"departure_date",
 		"createdAt",
 		"updatedAt",
+		"owner",
 	],
-};
-
-const include = {
-	all: true,
-	nested: true,
-	attributes: { exclude: ["createdAt", "updatedAt"] },
 };
 
 exports.index = async (req, res) => {
 	try {
 		const bookings = await models.BookingInformation.findAll({
-			include: include,
 			...options,
 		});
 		return res.status(200).json({ bookings });
@@ -38,7 +32,6 @@ exports.show = async (req, res) => {
 		const booking = await models.BookingInformation.findOne({
 			where: { id: req.params.id },
 			...options,
-			include,
 		});
 
 		if (!booking)
@@ -74,6 +67,7 @@ exports.create = async (req, res) => {
 			customer_id,
 			number_of_pax,
 			departure_date,
+			owner,
 		});
 
 		return res
