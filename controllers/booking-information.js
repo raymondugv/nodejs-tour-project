@@ -1,5 +1,6 @@
 const models = require("../models");
 const joi = require("joi");
+const sendEmail = require("../controllers/sendEmail");
 
 const options = {
 	raw: true,
@@ -18,9 +19,7 @@ const options = {
 
 exports.index = async (req, res) => {
 	try {
-		const bookings = await models.BookingInformation.findAll({
-			...options,
-		});
+		const bookings = await models.BookingInformation.findAll();
 		return res.status(200).json({ bookings });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -31,7 +30,6 @@ exports.show = async (req, res) => {
 	try {
 		const booking = await models.BookingInformation.findOne({
 			where: { id: req.params.id },
-			...options,
 		});
 
 		if (!booking)
@@ -61,14 +59,21 @@ exports.create = async (req, res) => {
 		}
 
 		const { tour_id, customer_id, number_of_pax, departure_date } = data;
-
-		const bookingCreate = await models.BookingInformation.create({
+		const booking = await models.BookingInformation.create({
 			tour_id,
 			customer_id,
 			number_of_pax,
 			departure_date,
-			owner,
+			owner: req.user.id,
 		});
+
+		const email = sendEmail(
+			"main@lekienhoanh.dev",
+			"Đơn hàng mới",
+			booking
+		);
+
+		return res.status(201).json({ booking, email });
 
 		return res
 			.status(201)
