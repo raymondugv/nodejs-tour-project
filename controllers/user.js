@@ -90,7 +90,6 @@ exports.index = async (req, res) => {
 	try {
 		let users = await models.User.findAll({
 			options,
-			include: "role",
 		});
 
 		return res.status(200).json({ users });
@@ -106,6 +105,9 @@ exports.show = async (req, res) => {
 			where: { id: req.params.id },
 			...options,
 		});
+
+		if (!user) return res.status(404).json({ message: "User not found" });
+
 		return res.status(200).json({ user });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -121,20 +123,24 @@ exports.create = async (req, res) => {
 			password: joi.string().required(),
 			role_id: joi.number().required(),
 		});
+
 		const { error, value } = schema.validate(req.body);
+
 		if (error) {
 			return res.status(400).json({ error });
 		}
+
 		let { name, email, password, role_id } = req.body;
+
 		password = await bcrypt.hash(password, salt);
+
 		const userExist = await models.User.findOne({
 			where: { email: req.body.email },
 			...options,
 		});
 
-		if (userExist) {
+		if (userExist)
 			return res.status(409).json({ message: "User already exist" });
-		}
 
 		const user = await models.User.create({
 			name: name,
@@ -170,7 +176,20 @@ exports.update = async (req, res) => {
 		let { name, email, password, role_id } = req.body;
 
 		password = await bcrypt.hash(password, salt);
-		const user = await models.User.update(
+
+		const userExists = await models.User.findOne({
+			where: { email: req.params.email },
+		});
+
+		if (userExists) return res.status(404).json({ message: "User exists" });
+
+		const user = await models.User.findOne({
+			where: { id: req.params.id },
+		});
+
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		user.update(
 			{
 				name: name,
 				email: email,
@@ -189,9 +208,13 @@ exports.update = async (req, res) => {
 // destroy
 exports.delete = async (req, res) => {
 	try {
-		const userDelete = await models.User.destroy({
+		const user = await models.User.findOne({
 			where: { id: req.params.id },
 		});
+
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		user.destroy();
 
 		return res.status(200).json({ message: "User deleted successfully" });
 	} catch (error) {

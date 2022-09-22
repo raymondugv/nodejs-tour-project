@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 		 */
 		static associate(models) {
 			this.belongsTo(models.Role, {
-				as: "role",
+				as: "roleInfo",
 				foreignKey: "role_id",
 				onUpdate: "NO ACTION",
 				onDelete: "NO ACTION",
@@ -25,6 +25,18 @@ module.exports = (sequelize, DataTypes) => {
 			role_id: DataTypes.INTEGER,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.attributes = { exclude: ["password"] };
+					options.include = {
+						all: true,
+						nested: true,
+						attributes: {
+							exclude: ["id", "createdAt", "updatedAt"],
+						},
+					};
+				},
+			},
 			sequelize,
 			modelName: "User",
 		}
