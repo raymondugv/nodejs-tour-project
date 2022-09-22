@@ -10,9 +10,6 @@ const emailConfig = {
 	},
 	ignoreTLS: true,
 	rejectUnauthorized: false,
-	tls: {
-		ciphers: "SSLv3",
-	},
 };
 
 const from_address = process.env.FROM_ADDRESS;
