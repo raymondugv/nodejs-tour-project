@@ -43,6 +43,7 @@ module.exports = {
 				],
 				defaultValue: PAYMENT_STATUS.WAITING_FOR_PAYMENT,
 			},
+			owner: Sequelize.INTEGER,
 			createdAt: {
 				allowNull: false,
 				type: Sequelize.DATE,

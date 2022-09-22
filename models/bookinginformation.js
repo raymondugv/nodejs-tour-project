@@ -52,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
 			departure_date: {
 				type: DataTypes.DATEONLY,
 			},
+			owner: DataTypes.INTEGER,
 			booking_status: DataTypes.INTEGER,
 			payment_status: DataTypes.INTEGER,
 		},
