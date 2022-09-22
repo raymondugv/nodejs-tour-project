@@ -85,8 +85,15 @@ exports.update = async (req, res) => {
 
 		let { name, email, phone, gender } = data;
 
+		const customer = await models.CustomerInformation.findOne({
+			where: { id: req.params.id },
+		});
+
+		if (!customer)
+			return res.status(404).json({ error: "Customer not found" });
+
 		const customerExist = await models.CustomerInformation.findOne({
-			where: { email: req.params.email, phone: req.params.phone },
+			where: { email, phone },
 		});
 
 		if (customerExist) {
@@ -95,7 +102,7 @@ exports.update = async (req, res) => {
 				.json({ error: "Email or Phone already exist" });
 		}
 
-		const customerUpdate = await models.CustomerInformation.update(
+		customer.update(
 			{
 				name,
 				email,
