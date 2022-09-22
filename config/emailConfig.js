@@ -8,7 +8,11 @@ const emailConfig = {
 		user: process.env.EMAIL_USER,
 		pass: process.env.EMAIL_PASSWORD,
 	},
-	ignoreTLS: false,
+	ignoreTLS: true,
+	rejectUnauthorized: false,
+	tls: {
+		ciphers: "SSLv3",
+	},
 };
 
 const from_address = process.env.FROM_ADDRESS;
