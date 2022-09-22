@@ -67,13 +67,15 @@ exports.create = async (req, res) => {
 			owner: req.user.id,
 		});
 
+		const customer_information = await models.CustomerInformation.findOne({
+			where: { id: customer_id },
+		});
+
 		const email = sendEmail(
-			"main@lekienhoanh.dev",
+			customer_information.email,
 			"Đơn hàng mới",
 			booking
 		);
-
-		return res.status(201).json({ booking, email });
 
 		return res
 			.status(201)
@@ -129,6 +131,12 @@ exports.update = async (req, res) => {
 				owner: req.user.id,
 			},
 			{ where: { id: req.params.id } }
+		);
+
+		const email = sendEmail(
+			booking.customer.email,
+			"Cập nhật booking",
+			booking
 		);
 
 		return res

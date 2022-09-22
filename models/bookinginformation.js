@@ -70,6 +70,16 @@ module.exports = (sequelize, DataTypes) => {
 					booking.booking_number = booking_code();
 				},
 				beforeFind: (options) => {
+					options.attributes = [
+						"id",
+						"booking_number",
+						"tour_id",
+						"customer_id",
+						"number_of_pax",
+						"departure_date",
+						"createdAt",
+						"updatedAt",
+					];
 					options.include = {
 						all: true,
 						nested: true,
