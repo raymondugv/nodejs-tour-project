@@ -7,21 +7,6 @@ const {
 	bookingUpdateForCustomer,
 } = require("../config/email-templates/customer");
 
-const options = {
-	raw: true,
-	attributes: [
-		"id",
-		"booking_number",
-		"tour_id",
-		"customer_id",
-		"number_of_pax",
-		"departure_date",
-		"createdAt",
-		"updatedAt",
-		"owner",
-	],
-};
-
 exports.index = async (req, res) => {
 	try {
 		const bookings = await models.BookingInformation.findAll();
@@ -78,15 +63,15 @@ exports.create = async (req, res) => {
 
 		var email_customer = sendEmail(
 			customer.email,
-			"New Booking for customer",
+			"Your booking has been received",
 			newBookingForCustomer(booking, customer)
 		);
 
-		// var email_staff = await sendEmail(
-		// 	"staff@nodetour.js",
-		// 	"New Booking for staff",
-		// 	newBookingForStaff(booking, customer)
-		// );
+		var email_staff = await sendEmail(
+			"staff@nodetour.js",
+			"New Booking received",
+			newBookingForStaff(booking, customer)
+		);
 
 		return res
 			.status(201)
