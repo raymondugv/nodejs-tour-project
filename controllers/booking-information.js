@@ -1,6 +1,11 @@
 const models = require("../models");
 const joi = require("joi");
 const sendEmail = require("../controllers/sendEmail");
+const { newBookingForStaff } = require("../config/email-templates/staff");
+const {
+	newBookingForCustomer,
+	bookingUpdateForCustomer,
+} = require("../config/email-templates/customer");
 
 const options = {
 	raw: true,
@@ -67,15 +72,21 @@ exports.create = async (req, res) => {
 			owner: req.user.id,
 		});
 
-		const customer_information = await models.CustomerInformation.findOne({
+		const customer = await models.CustomerInformation.findOne({
 			where: { id: customer_id },
 		});
 
-		const email = sendEmail(
-			customer_information.email,
-			"Đơn hàng mới",
-			booking
+		var email_customer = sendEmail(
+			customer.email,
+			"New Booking for customer",
+			newBookingForCustomer(booking, customer)
 		);
+
+		// var email_staff = await sendEmail(
+		// 	"staff@nodetour.js",
+		// 	"New Booking for staff",
+		// 	newBookingForStaff(booking, customer)
+		// );
 
 		return res
 			.status(201)
@@ -136,7 +147,7 @@ exports.update = async (req, res) => {
 		const email = sendEmail(
 			booking.customer.email,
 			"Cập nhật booking",
-			booking
+			bookingUpdateForCustomer(booking, booking.customer)
 		);
 
 		return res

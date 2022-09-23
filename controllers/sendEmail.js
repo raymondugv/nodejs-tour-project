@@ -4,7 +4,7 @@ const { emailConfig, from_address } = require("../config/emailConfig");
 module.exports = (email, subject, message) => {
 	const transporter = nodemailer.createTransport(emailConfig);
 
-	console.log({ email, subject, message });
+	// console.log({ email, subject, message });
 
 	const mainOptions = {
 		from: from_address,
