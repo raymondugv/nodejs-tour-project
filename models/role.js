@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
 			description: DataTypes.STRING,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.order = [["createdAt", "DESC"]];
+				},
+			},
 			sequelize,
 			modelName: "Role",
 		}

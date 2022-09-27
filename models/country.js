@@ -22,6 +22,11 @@ module.exports = (sequelize, DataTypes) => {
 			name: DataTypes.STRING,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.order = [["createdAt", "DESC"]];
+				},
+			},
 			sequelize,
 			modelName: "Country",
 		}

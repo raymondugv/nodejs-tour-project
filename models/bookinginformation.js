@@ -92,6 +92,7 @@ module.exports = (sequelize, DataTypes) => {
 							],
 						},
 					};
+					options.order = [["createdAt", "DESC"]];
 				},
 			},
 			sequelize,

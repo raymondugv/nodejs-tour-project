@@ -40,6 +40,12 @@ module.exports = (sequelize, DataTypes) => {
 			},
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.attributes = ["id", "name", "email", "gender"];
+					options.order = [["createdAt", "DESC"]];
+				},
+			},
 			sequelize,
 			modelName: "CustomerInformation",
 		}

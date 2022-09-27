@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
 							exclude: ["id", "createdAt", "updatedAt"],
 						},
 					};
+					options.order = [["createdAt", "DESC"]];
 				},
 			},
 			defaultScope: {
