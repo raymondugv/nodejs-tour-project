@@ -4,9 +4,11 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const salt = 10;
 
-const options = {
-	raw: true,
-	attributes: ["id", "name", "email", "role_id"],
+const validate_schema = {
+	name: joi.string().required(),
+	email: joi.string().email().required(),
+	password: joi.string().required(),
+	role_id: joi.number().required(),
 };
 
 exports.login = async (req, res) => {
@@ -80,9 +82,7 @@ exports.logout = async (req, res) => {
 // index
 exports.index = async (req, res) => {
 	try {
-		let users = await models.User.findAll({
-			options,
-		});
+		let users = await models.User.findAll();
 
 		return res.status(200).json({ users });
 	} catch (error) {
@@ -95,7 +95,6 @@ exports.show = async (req, res) => {
 	try {
 		const user = await models.User.findOne({
 			where: { id: req.params.id },
-			...options,
 		});
 
 		if (!user) return res.status(404).json({ message: "User not found" });
@@ -109,12 +108,7 @@ exports.show = async (req, res) => {
 // create
 exports.create = async (req, res) => {
 	try {
-		const schema = joi.object().keys({
-			name: joi.string().required(),
-			email: joi.string().email().required(),
-			password: joi.string().required(),
-			role_id: joi.number().required(),
-		});
+		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(req.body);
 
@@ -128,7 +122,6 @@ exports.create = async (req, res) => {
 
 		const userExist = await models.User.findOne({
 			where: { email: req.body.email },
-			...options,
 		});
 
 		if (userExist)
@@ -150,12 +143,7 @@ exports.create = async (req, res) => {
 // update
 exports.update = async (req, res) => {
 	try {
-		const schema = joi.object().keys({
-			name: joi.string(),
-			email: joi.string().email(),
-			password: joi.string(),
-			role_id: joi.number(),
-		});
+		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(req.body);
 
@@ -165,10 +153,8 @@ exports.update = async (req, res) => {
 
 		let { name, email, password, role_id } = req.body;
 
-		password = await bcrypt.hash(password, salt);
-
 		const userExists = await models.User.findOne({
-			where: { email: req.params.email },
+			where: { email },
 		});
 
 		if (userExists) return res.status(404).json({ message: "User exists" });
@@ -179,15 +165,12 @@ exports.update = async (req, res) => {
 
 		if (!user) return res.status(404).json({ message: "User not found" });
 
-		user.update(
-			{
-				name: name,
-				email: email,
-				password: password,
-				role_id: role_id,
-			},
-			{ where: { id: req.params.id } }
-		);
+		user.update({
+			name: name,
+			email: email,
+			password: password,
+			role_id: role_id,
+		});
 
 		return res.status(200).json({ message: "User updated successfully" });
 	} catch (error) {

@@ -1,5 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcryptjs");
+const salt = 10;
+
 module.exports = (sequelize, DataTypes) => {
 	class User extends Model {
 		/**
@@ -27,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			hooks: {
 				beforeFind: (options) => {
+					options.attributes = ["id", "name", "email"];
 					options.include = {
 						all: true,
 						nested: true,
@@ -34,7 +38,18 @@ module.exports = (sequelize, DataTypes) => {
 							exclude: ["id", "createdAt", "updatedAt"],
 						},
 					};
-					options.order = [["createdAt", "DESC"]];
+					options.order = [
+						["createdAt", "DESC"],
+						["id", "DESC"],
+					];
+				},
+				beforeCreate: (user, options) => {
+					user.password = bcrypt.hashSync(user.password, salt);
+				},
+				beforeUpdate: (user, options) => {
+					if (user.changed("password")) {
+						user.password = bcrypt.hashSync(user.password, salt);
+					}
 				},
 			},
 			defaultScope: {
