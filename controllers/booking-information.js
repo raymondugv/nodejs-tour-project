@@ -7,11 +7,17 @@ const {
 	bookingUpdateForCustomer,
 } = require("../config/email-templates/customer");
 
+const validate_schema = {
+	tour_id: joi.number().required(),
+	customer_id: joi.number().required(),
+	number_of_pax: joi.number().required(),
+	departure_date: joi.date().required(),
+};
+
 exports.index = async (req, res) => {
 	try {
-		const bookings = await models.BookingInformation.findAll({
-			order: [["createdAt", "DESC"]],
-		});
+		const bookings = await models.BookingInformation.findAll();
+
 		return res.status(200).json({ bookings });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -37,12 +43,7 @@ exports.create = async (req, res) => {
 	try {
 		const data = req.body;
 
-		const schema = joi.object().keys({
-			tour_id: joi.number().required(),
-			customer_id: joi.number().required(),
-			number_of_pax: joi.number().required(),
-			departure_date: joi.date().required(),
-		});
+		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(data);
 
@@ -51,6 +52,7 @@ exports.create = async (req, res) => {
 		}
 
 		const { tour_id, customer_id, number_of_pax, departure_date } = data;
+
 		const booking = await models.BookingInformation.create({
 			tour_id,
 			customer_id,
@@ -63,7 +65,7 @@ exports.create = async (req, res) => {
 			where: { id: customer_id },
 		});
 
-		var email_staff = await sendEmail(
+		var email_staff = sendEmail(
 			"staff@nodetour.js",
 			"New Booking received",
 			newBookingForStaff(booking, customer)
@@ -87,7 +89,6 @@ exports.update = async (req, res) => {
 			departure_date: joi.date().required(),
 			booking_status: joi.number(),
 			payment_status: joi.number(),
-			owner: joi.number(),
 		});
 
 		const { error, value } = schema.validate(data);
@@ -112,18 +113,14 @@ exports.update = async (req, res) => {
 		if (!booking)
 			return res.status(404).json({ message: "Booking not found" });
 
-		booking.update(
-			{
-				tour_id,
-				customer_id,
-				number_of_pax,
-				departure_date,
-				booking_status,
-				payment_status,
-				owner: req.user.id,
-			},
-			{ where: { id: req.params.id } }
-		);
+		booking.update({
+			tour_id,
+			customer_id,
+			number_of_pax,
+			departure_date,
+			booking_status,
+			payment_status,
+		});
 
 		const email = sendEmail(
 			booking.customer.email,
