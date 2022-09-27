@@ -2,30 +2,22 @@ const models = require("../models");
 const joi = require("joi");
 const fs = require("fs");
 
-const options = {
-	raw: true,
-	attributes: [
-		"id",
-		"title",
-		"slug",
-		"description",
-		"image",
-		"price",
-		"departure_date",
-		"departure",
-		"arrival",
-		"owner",
-		"status",
-		"createdAt",
-		"updatedAt",
-	],
+const validate_schema = {
+	title: joi.string().required(),
+	slug: joi.string().required(),
+	description: joi.string().required(),
+	image: joi.string().dataUri(),
+	price: joi.number().required(),
+	departure_date: joi.date().required(),
+	departure: joi.number().required(),
+	arrival: joi.number().required(),
+	owner: joi.number(),
+	categories: joi.array(),
 };
 
 exports.index = async (req, res) => {
 	try {
-		let tours = await models.Tour.findAll({
-			options: options,
-		});
+		let tours = await models.Tour.findAll();
 
 		if (req.user.roleId !== 1) {
 			tours = tours.filter((tour) => tour.owner === req.user.id);
@@ -41,7 +33,6 @@ exports.show = async (req, res) => {
 	try {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
-			...options,
 		});
 
 		if (!tour) return res.status(404).json({ message: "Tour not found" });
@@ -70,18 +61,7 @@ exports.create = async (req, res) => {
 
 		let image = req.file;
 
-		const schema = joi.object().keys({
-			title: joi.string().required(),
-			slug: joi.string().required(),
-			description: joi.string().required(),
-			image: joi.string().dataUri(),
-			price: joi.number().required(),
-			departure_date: joi.date().required(),
-			departure: joi.number().required(),
-			arrival: joi.number().required(),
-			owner: joi.number(),
-			categories: joi.array(),
-		});
+		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(req.body);
 
@@ -91,6 +71,12 @@ exports.create = async (req, res) => {
 
 		if (!req.file)
 			res.status(401).json({ error: "Please provide an image" });
+
+		const tourExist = await models.Tour.findOne({
+			where: { slug: slug },
+		});
+
+		if (tourExist) return res.status(400).json({ message: "Tour exist" });
 
 		const tour = await models.Tour.create({
 			title: title,
@@ -128,18 +114,7 @@ exports.update = async (req, res) => {
 
 		let image = req.file;
 
-		const schema = joi.object().keys({
-			title: joi.string().required(),
-			slug: joi.string().required(),
-			description: joi.string().required(),
-			image: joi.string(),
-			price: joi.number().required(),
-			departure_date: joi.date().required(),
-			departure: joi.number().required(),
-			arrival: joi.number().required(),
-			owner: joi.number(),
-			categories: joi.array(),
-		});
+		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(req.body);
 
@@ -159,20 +134,17 @@ exports.update = async (req, res) => {
 			fs.unlinkSync(old_image);
 		}
 
-		tour.update(
-			{
-				title: title,
-				slug: slug,
-				description: description,
-				image: image.path,
-				price: price,
-				departure_date: departure_date,
-				departure: departure,
-				arrival: arrival,
-				owner: req.user.id,
-			},
-			{ where: { id: req.params.id } }
-		);
+		tour.update({
+			title: title,
+			slug: slug,
+			description: description,
+			image: image.path,
+			price: price,
+			departure_date: departure_date,
+			departure: departure,
+			arrival: arrival,
+			owner: req.user.id,
+		});
 
 		tour.setCategories(req.body.categories);
 
@@ -192,12 +164,9 @@ exports.active = async (req, res) => {
 
 		if (!tour) return res.status(404).json({ message: "Tour not found" });
 
-		tour.update(
-			{
-				status: status,
-			},
-			{ where: { id: req.params.id } }
-		);
+		tour.update({
+			status: status,
+		});
 
 		return res.status(200).json({ message: "Tour updated successfully" });
 	} catch (error) {
