@@ -9,7 +9,9 @@ const {
 
 exports.index = async (req, res) => {
 	try {
-		const bookings = await models.BookingInformation.findAll();
+		const bookings = await models.BookingInformation.findAll({
+			order: [["createdAt", "DESC"]],
+		});
 		return res.status(200).json({ bookings });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -60,12 +62,6 @@ exports.create = async (req, res) => {
 		const customer = await models.CustomerInformation.findOne({
 			where: { id: customer_id },
 		});
-
-		var email_customer = sendEmail(
-			customer.email,
-			"Your booking has been received",
-			newBookingForCustomer(booking, customer)
-		);
 
 		var email_staff = await sendEmail(
 			"staff@nodetour.js",
