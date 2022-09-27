@@ -42,7 +42,10 @@ module.exports = (sequelize, DataTypes) => {
 							exclude: ["id", "createdAt", "updatedAt"],
 						},
 					};
-					options.order = [["createdAt", "DESC"]];
+					options.order = [
+						["createdAt", "DESC"],
+						["id", "DESC"],
+					];
 				},
 			},
 			sequelize,
