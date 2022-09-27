@@ -118,8 +118,6 @@ exports.create = async (req, res) => {
 
 		let { name, email, password, role_id } = req.body;
 
-		password = await bcrypt.hash(password, salt);
-
 		const userExist = await models.User.findOne({
 			where: { email: req.body.email },
 		});
