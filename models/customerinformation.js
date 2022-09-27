@@ -42,8 +42,19 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			hooks: {
 				beforeFind: (options) => {
-					options.attributes = ["id", "name", "email", "gender"];
-					options.order = [["createdAt", "DESC"]];
+					options.attributes = [
+						"id",
+						"name",
+						"email",
+						"phone",
+						"gender",
+						"createdAt",
+						"updatedAt",
+					];
+					options.order = [
+						["createdAt", "DESC"],
+						["id", "DESC"],
+					];
 				},
 			},
 			sequelize,
