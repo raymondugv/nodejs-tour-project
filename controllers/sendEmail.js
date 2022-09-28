@@ -1,16 +1,29 @@
 const nodemailer = require("nodemailer");
 const { emailConfig, from_address } = require("../config/emailConfig");
+const fs = require("fs").promises;
+const path = require("path");
+const handlebars = require("handlebars");
 
-module.exports = (email, subject, message) => {
+module.exports = async (
+	email,
+	subject,
+	message,
+	emailTemplate,
+	replacements
+) => {
 	const transporter = nodemailer.createTransport(emailConfig);
 
-	// console.log({ email, subject, message });
+	const templatePath = path.join(__dirname, emailTemplate);
+	const templateFile = await fs.readFile(templatePath, "utf-8");
+	const template = handlebars.compile(templateFile);
+
+	const finalHtml = template(replacements);
 
 	const mainOptions = {
 		from: from_address,
 		to: email,
 		subject: subject,
-		html: message,
+		html: finalHtml,
 	};
 
 	return transporter.sendMail(mainOptions, (err, info) => {
