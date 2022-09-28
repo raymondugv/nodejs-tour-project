@@ -24,7 +24,12 @@ module.exports = (sequelize, DataTypes) => {
 		{
 			hooks: {
 				beforeFind: (options) => {
-					options.attributes = ["id", "name"];
+					options.attributes = [
+						"id",
+						"name",
+						"createdAt",
+						"updatedAt",
+					];
 					options.include = {
 						all: true,
 						nested: true,
@@ -32,7 +37,10 @@ module.exports = (sequelize, DataTypes) => {
 							exclude: ["createdAt", "updatedAt"],
 						},
 					};
-					options.order = [["createdAt", "DESC"]];
+					options.order = [
+						["createdAt", "DESC"],
+						["id", "desc"],
+					];
 				},
 			},
 			sequelize,
