@@ -28,9 +28,16 @@ module.exports = (sequelize, DataTypes) => {
 			role_id: DataTypes.INTEGER,
 		},
 		{
+			defaultScope: {
+				attributes: { exclude: ["password"] },
+			},
+			scopes: {
+				withPassword: {
+					attributes: {},
+				},
+			},
 			hooks: {
 				beforeFind: (options) => {
-					options.attributes = ["id", "name", "email"];
 					options.include = {
 						all: true,
 						nested: true,
@@ -50,14 +57,6 @@ module.exports = (sequelize, DataTypes) => {
 					if (user.changed("password")) {
 						user.password = bcrypt.hashSync(user.password, salt);
 					}
-				},
-			},
-			defaultScope: {
-				attributes: { exclude: ["password"] },
-			},
-			scopes: {
-				withPassword: {
-					attributes: {},
 				},
 			},
 			sequelize,
