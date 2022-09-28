@@ -6,6 +6,7 @@ const {
 	newBookingForCustomer,
 	bookingUpdateForCustomer,
 } = require("../config/email-templates/customer");
+const exchange = require("../config/currencyTransfer");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
@@ -61,15 +62,35 @@ exports.create = async (req, res) => {
 			owner: req.user.id,
 		});
 
+		const bookingCreated = await models.BookingInformation.findOne({
+			where: { id: booking.id },
+		});
+
 		const customer = await models.CustomerInformation.findOne({
 			where: { id: customer_id },
 		});
 
-		var email_staff = sendEmail(
-			"staff@nodetour.js",
-			"New Booking received",
-			newBookingForStaff(booking, customer)
-		);
+		const tour = await models.Tour.findOne({
+			where: { id: tour_id },
+		});
+
+		// var email_staff = sendEmail(
+		// 	"staff@nodetour.js",
+		// 	"New Booking received" + booking.booking_number,
+		// 	newBookingForStaff(bookingCreated, bookingCreated.customer),
+		// 	"../config/email-templates/newBookingStaff.html",
+		// 	{
+		// 		bookingNumber: booking.booking_number,
+		// 		createdAt: booking.createdAt,
+		// 		customerName: customer.name,
+		// 		customerEmail: customer.email,
+		// 		customerPhone: customer.phone,
+		// 		tourTitle: tour.title,
+		// 		tourDescription: tour.description,
+		// 		numberOfPax: booking.number_of_pax,
+		// 		tourPrice: exchange(tour.price),
+		// 	}
+		// );
 
 		return res
 			.status(201)
@@ -121,12 +142,6 @@ exports.update = async (req, res) => {
 			booking_status,
 			payment_status,
 		});
-
-		const email = sendEmail(
-			booking.customer.email,
-			"Cập nhật booking",
-			bookingUpdateForCustomer(booking, booking.customer)
-		);
 
 		return res
 			.status(200)
