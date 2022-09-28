@@ -2,7 +2,6 @@ const models = require("../models");
 const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const salt = 10;
 
 const validate_schema = {
 	name: joi.string().required(),
