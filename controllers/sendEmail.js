@@ -4,7 +4,7 @@ const fs = require("fs").promises;
 const path = require("path");
 const handlebars = require("handlebars");
 
-module.exports = async (email, subject, emailTemplate, replacements) => {
+module.exports = async (email, subject, emailTemplate, replacements = null) => {
 	const transporter = nodemailer.createTransport(emailConfig);
 
 	const templatePath = path.join(__dirname, emailTemplate);

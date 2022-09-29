@@ -1,12 +1,11 @@
 const models = require("../models");
 const joi = require("joi");
-const sendEmail = require("../controllers/sendEmail");
-const { newBookingForStaff } = require("../config/email-templates/staff");
+const event = require("events");
+const { staffBookingCreated } = require("../events/StaffEvent");
 const {
-	newBookingForCustomer,
-	bookingUpdateForCustomer,
-} = require("../config/email-templates/customer");
-const exchange = require("../config/currencyTransfer");
+	customerBookingCreated,
+	customerBookingUpdate,
+} = require("../events/CustomerEvent");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
@@ -54,7 +53,7 @@ exports.create = async (req, res) => {
 
 		const { tour_id, customer_id, number_of_pax, departure_date } = data;
 
-		const booking = await models.BookingInformation.create({
+		const bookingCreate = await models.BookingInformation.create({
 			tour_id,
 			customer_id,
 			number_of_pax,
@@ -62,35 +61,12 @@ exports.create = async (req, res) => {
 			owner: req.user.id,
 		});
 
-		const bookingCreated = await models.BookingInformation.findOne({
-			where: { id: booking.id },
+		const booking = await models.BookingInformation.findOne({
+			where: { id: bookingCreate.id },
 		});
 
-		const customer = await models.CustomerInformation.findOne({
-			where: { id: customer_id },
-		});
-
-		const tour = await models.Tour.findOne({
-			where: { id: tour_id },
-		});
-
-		// var email_staff = sendEmail(
-		// 	"staff@nodetour.js",
-		// 	"New Booking received" + booking.booking_number,
-		// 	newBookingForStaff(bookingCreated, bookingCreated.customer),
-		// 	"../config/email-templates/newBookingStaff.html",
-		// 	{
-		// 		bookingNumber: booking.booking_number,
-		// 		createdAt: booking.createdAt,
-		// 		customerName: customer.name,
-		// 		customerEmail: customer.email,
-		// 		customerPhone: customer.phone,
-		// 		tourTitle: tour.title,
-		// 		tourDescription: tour.description,
-		// 		numberOfPax: booking.number_of_pax,
-		// 		tourPrice: exchange(tour.price),
-		// 	}
-		// );
+		staffBookingCreated.emit("booking.created", booking);
+		customerBookingCreated.emit("booking.created", booking);
 
 		return res
 			.status(201)
@@ -142,6 +118,8 @@ exports.update = async (req, res) => {
 			booking_status,
 			payment_status,
 		});
+
+		const send = customerBookingUpdate.emit("booking.updated", booking);
 
 		return res
 			.status(200)
