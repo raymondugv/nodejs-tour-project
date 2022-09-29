@@ -22,6 +22,27 @@ module.exports = (sequelize, DataTypes) => {
 			name: DataTypes.STRING,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.attributes = [
+						"id",
+						"name",
+						"createdAt",
+						"updatedAt",
+					];
+					options.include = {
+						all: true,
+						nested: true,
+						attributes: {
+							exclude: ["createdAt", "updatedAt"],
+						},
+					};
+					options.order = [
+						["createdAt", "DESC"],
+						["id", "desc"],
+					];
+				},
+			},
 			sequelize,
 			modelName: "Country",
 		}

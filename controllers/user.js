@@ -2,11 +2,12 @@ const models = require("../models");
 const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-const salt = 10;
 
-const options = {
-	raw: true,
-	attributes: ["id", "name", "email", "role_id"],
+const validate_schema = {
+	name: joi.string().required(),
+	email: joi.string().email().required(),
+	password: joi.string().required(),
+	role_id: joi.number().required(),
 };
 
 exports.login = async (req, res) => {
@@ -25,14 +26,11 @@ exports.login = async (req, res) => {
 
 		const { email, password } = data;
 
-		const userExist = await models.User.findOne({
-			where: { email: email },
+		const user = await models.User.scope("withPassword").findOne({
+			where: { email },
 		});
 
-		const isPasswordMatch = await bcrypt.compare(
-			password,
-			userExist.password
-		);
+		const isPasswordMatch = await bcrypt.compare(password, user.password);
 
 		if (!isPasswordMatch) {
 			return res.status(500).json({ message: "Password is incorrect" });
@@ -40,9 +38,9 @@ exports.login = async (req, res) => {
 
 		const token = jwt.sign(
 			{
-				id: userExist.id,
-				roleId: userExist.role_id,
-				name: userExist.name,
+				id: user.id,
+				roleId: user.role_id,
+				name: user.name,
 			},
 			process.env.JWT_SECRET,
 			{
@@ -52,11 +50,6 @@ exports.login = async (req, res) => {
 
 		return res.status(200).json({
 			message: "Login successfully",
-			user: {
-				name: userExist.name,
-				email: userExist.email,
-				role_id: userExist.role_id,
-			},
 			token,
 		});
 	} catch (error) {
@@ -88,10 +81,7 @@ exports.logout = async (req, res) => {
 // index
 exports.index = async (req, res) => {
 	try {
-		let users = await models.User.findAll({
-			options,
-			include: "role",
-		});
+		let users = await models.User.findAll();
 
 		return res.status(200).json({ users });
 	} catch (error) {
@@ -104,8 +94,10 @@ exports.show = async (req, res) => {
 	try {
 		const user = await models.User.findOne({
 			where: { id: req.params.id },
-			...options,
 		});
+
+		if (!user) return res.status(404).json({ message: "User not found" });
+
 		return res.status(200).json({ user });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
@@ -115,26 +107,22 @@ exports.show = async (req, res) => {
 // create
 exports.create = async (req, res) => {
 	try {
-		const schema = joi.object().keys({
-			name: joi.string().required(),
-			email: joi.string().email().required(),
-			password: joi.string().required(),
-			role_id: joi.number().required(),
-		});
+		const schema = joi.object().keys(validate_schema);
+
 		const { error, value } = schema.validate(req.body);
+
 		if (error) {
 			return res.status(400).json({ error });
 		}
+
 		let { name, email, password, role_id } = req.body;
-		password = await bcrypt.hash(password, salt);
+
 		const userExist = await models.User.findOne({
 			where: { email: req.body.email },
-			...options,
 		});
 
-		if (userExist) {
+		if (userExist)
 			return res.status(409).json({ message: "User already exist" });
-		}
 
 		const user = await models.User.create({
 			name: name,
@@ -143,9 +131,7 @@ exports.create = async (req, res) => {
 			role_id: role_id,
 		});
 
-		return res
-			.status(201)
-			.json({ message: "User created successfully", user });
+		return res.status(201).json({ message: "User created successfully" });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
@@ -154,12 +140,7 @@ exports.create = async (req, res) => {
 // update
 exports.update = async (req, res) => {
 	try {
-		const schema = joi.object().keys({
-			name: joi.string(),
-			email: joi.string().email(),
-			password: joi.string(),
-			role_id: joi.number(),
-		});
+		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(req.body);
 
@@ -169,16 +150,24 @@ exports.update = async (req, res) => {
 
 		let { name, email, password, role_id } = req.body;
 
-		password = await bcrypt.hash(password, salt);
-		const user = await models.User.update(
-			{
-				name: name,
-				email: email,
-				password: password,
-				role_id: role_id,
-			},
-			{ where: { id: req.params.id } }
-		);
+		const userExists = await models.User.findOne({
+			where: { email },
+		});
+
+		if (userExists) return res.status(404).json({ message: "User exists" });
+
+		const user = await models.User.findOne({
+			where: { id: req.params.id },
+		});
+
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		user.update({
+			name: name,
+			email: email,
+			password: password,
+			role_id: role_id,
+		});
 
 		return res.status(200).json({ message: "User updated successfully" });
 	} catch (error) {
@@ -189,9 +178,13 @@ exports.update = async (req, res) => {
 // destroy
 exports.delete = async (req, res) => {
 	try {
-		const userDelete = await models.User.destroy({
+		const user = await models.User.findOne({
 			where: { id: req.params.id },
 		});
+
+		if (!user) return res.status(404).json({ message: "User not found" });
+
+		user.destroy();
 
 		return res.status(200).json({ message: "User deleted successfully" });
 	} catch (error) {

@@ -8,13 +8,7 @@ module.exports = (sequelize, DataTypes) => {
 		 * The `models/index` file will call this method automatically.
 		 */
 		static associate(models) {
-			this.hasMany(models.User, {
-				as: "users",
-				foreignKey: "role_id",
-				onUpdate: "NO ACTION",
-				onDelete: "NO ACTION",
-				constraints: false,
-			});
+			//
 		}
 	}
 	Role.init(
@@ -23,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
 			description: DataTypes.STRING,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.order = [["createdAt", "DESC"]];
+				},
+			},
 			sequelize,
 			modelName: "Role",
 		}

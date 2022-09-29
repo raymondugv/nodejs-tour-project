@@ -1,6 +1,6 @@
 const mime = require("mime-types");
 const multer = require("multer");
-const { uuid } = require("uuidv4");
+const { v4: uuid } = require("uuid");
 
 const uploadConfig = multer.diskStorage({
 	destination: (req, file, cb) => {
