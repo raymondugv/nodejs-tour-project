@@ -30,11 +30,12 @@ exports.login = async (req, res) => {
 			where: { email },
 		});
 
+		if (!user) return res.status(404).json({ message: "User not found" });
+
 		const isPasswordMatch = await bcrypt.compare(password, user.password);
 
-		if (!isPasswordMatch) {
-			return res.status(500).json({ message: "Password is incorrect" });
-		}
+		if (!isPasswordMatch)
+			return res.status(401).json({ message: "Password is incorrect" });
 
 		const token = jwt.sign(
 			{

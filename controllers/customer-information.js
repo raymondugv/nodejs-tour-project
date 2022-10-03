@@ -29,9 +29,8 @@ exports.show = async (req, res) => {
 			where: { id: req.params.id },
 		});
 
-		if (!customer) {
+		if (!customer)
 			return res.status(404).json({ error: "Customer not found" });
-		}
 
 		return res.status(200).json({ customer });
 	} catch (error) {
@@ -48,9 +47,7 @@ exports.create = async (req, res) => {
 
 		const { error, value } = schema.validate(data);
 
-		if (error) {
-			return res.status(400).json({ error });
-		}
+		if (error) return res.status(400).json({ error });
 
 		if (!image) return res.status(400).json({ error: "Image is required" });
 
