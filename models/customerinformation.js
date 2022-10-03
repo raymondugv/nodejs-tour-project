@@ -1,5 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcryptjs");
+const salt = 10;
+
 module.exports = (sequelize, DataTypes) => {
 	class CustomerInformation extends Model {
 		/**
@@ -20,6 +23,11 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
+			username: {
+				type: DataTypes.STRING,
+				allowNull: false,
+				unique: true,
+			},
 			email: {
 				type: DataTypes.STRING,
 				allowNull: false,
@@ -27,6 +35,10 @@ module.exports = (sequelize, DataTypes) => {
 				validate: {
 					isEmail: true,
 				},
+			},
+			password: {
+				type: DataTypes.STRING,
+				allowNull: false,
 			},
 			phone: {
 				type: DataTypes.STRING,
@@ -38,16 +50,33 @@ module.exports = (sequelize, DataTypes) => {
 				defaultValue: "0",
 				allowNull: false,
 			},
+			birthday: {
+				type: DataTypes.DATEONLY,
+			},
+			avatar: {
+				type: DataTypes.STRING,
+			},
 		},
 		{
+			defaultScope: {
+				attributes: { exclude: ["password"] },
+			},
+			scopes: {
+				withPassword: {
+					attributes: {},
+				},
+			},
 			hooks: {
 				beforeFind: (options) => {
 					options.attributes = [
 						"id",
 						"name",
 						"email",
+						"username",
 						"phone",
 						"gender",
+						"birthday",
+						"avatar",
 						"createdAt",
 						"updatedAt",
 					];
@@ -55,6 +84,20 @@ module.exports = (sequelize, DataTypes) => {
 						["createdAt", "DESC"],
 						["id", "DESC"],
 					];
+				},
+				beforeCreate: (customer, options) => {
+					customer.password = bcrypt.hashSync(
+						customer.password,
+						salt
+					);
+				},
+				beforeUpdate: (customer, options) => {
+					if (customer.changed("password")) {
+						customer.password = bcrypt.hashSync(
+							customer.password,
+							salt
+						);
+					}
 				},
 			},
 			sequelize,
