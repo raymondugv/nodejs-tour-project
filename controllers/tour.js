@@ -19,9 +19,8 @@ exports.index = async (req, res) => {
 	try {
 		let tours = await models.Tour.findAll();
 
-		if (req.user.roleId !== 1) {
+		if (req.user.roleId !== 1)
 			tours = tours.filter((tour) => tour.owner === req.user.id);
-		}
 
 		return res.status(200).json({ tours });
 	} catch (error) {
@@ -37,9 +36,8 @@ exports.show = async (req, res) => {
 
 		if (!tour) return res.status(404).json({ message: "Tour not found" });
 
-		if (tour.owner !== req.user.roleId) {
+		if (tour.owner !== req.user.roleId)
 			return res.status(401).json({ message: "Unauthorized" });
-		}
 
 		return res.status(200).json({ tour });
 	} catch (error) {
@@ -65,9 +63,7 @@ exports.create = async (req, res) => {
 
 		const { error, value } = schema.validate(req.body);
 
-		if (error) {
-			return res.status(400).json({ error });
-		}
+		if (error) return res.status(400).json({ error });
 
 		if (!req.file)
 			res.status(401).json({ error: "Please provide an image" });
@@ -118,9 +114,7 @@ exports.update = async (req, res) => {
 
 		const { error, value } = schema.validate(req.body);
 
-		if (error) {
-			return res.status(400).json({ error });
-		}
+		if (error) return res.status(400).json({ error });
 
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },
@@ -130,9 +124,7 @@ exports.update = async (req, res) => {
 
 		const old_image = tour.image;
 
-		if (image) {
-			fs.unlinkSync(old_image);
-		}
+		if (image) fs.unlinkSync(old_image);
 
 		tour.update({
 			title: title,

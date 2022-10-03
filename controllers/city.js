@@ -71,9 +71,7 @@ exports.update = async (req, res) => {
 
 		const { error, value } = schema.validate(data);
 
-		if (error) {
-			return res.status(400).json({ error });
-		}
+		if (error) return res.status(400).json({ error });
 
 		const city = await models.City.findOne({
 			where: { id: req.params.id },

@@ -44,9 +44,8 @@ exports.create = async (req, res) => {
 
 		const countryExist = await models.Country.findOne({ where: { name } });
 
-		if (countryExist) {
+		if (countryExist)
 			return res.status(409).json({ message: "Country already exist" });
-		}
 
 		const country = await models.Country.create({
 			name: name,
@@ -67,9 +66,7 @@ exports.update = async (req, res) => {
 
 		const { error, value } = schema.validate(data);
 
-		if (error) {
-			return res.status(400).json({ error });
-		}
+		if (error) return res.status(400).json({ error });
 
 		let { name } = data;
 

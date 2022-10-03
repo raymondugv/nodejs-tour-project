@@ -119,8 +119,6 @@ exports.update = async (req, res) => {
 			payment_status,
 		});
 
-		const send = customerBookingUpdate.emit("booking.updated", booking);
-
 		return res
 			.status(200)
 			.json({ message: "Booking updated successfully" });
