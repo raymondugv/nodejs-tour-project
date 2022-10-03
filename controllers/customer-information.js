@@ -1,6 +1,5 @@
 const models = require("../models");
 const joi = require("joi");
-const fs = require("fs");
 const { Op } = require("sequelize");
 
 const validate_schema = {
