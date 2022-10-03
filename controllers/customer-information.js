@@ -1,11 +1,16 @@
 const models = require("../models");
 const joi = require("joi");
+const { Op } = require("sequelize");
 
 const validate_schema = {
 	name: joi.string().required(),
 	email: joi.string().email().required(),
 	gender: joi.number().required(),
 	phone: joi.string().required(),
+	username: joi.string().required(),
+	password: joi.string().required(),
+	birthday: joi.date(),
+	avatar: joi.string(),
 };
 
 exports.index = async (req, res) => {
@@ -37,6 +42,8 @@ exports.show = async (req, res) => {
 exports.create = async (req, res) => {
 	try {
 		const data = req.body;
+		let image = req.file;
+
 		const schema = joi.object().keys(validate_schema);
 
 		const { error, value } = schema.validate(data);
@@ -45,13 +52,28 @@ exports.create = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		let { name, email, gender, phone } = data;
+		if (!image) return res.status(400).json({ error: "Image is required" });
+
+		let { name, email, gender, phone, username, password, birthday } = data;
+
+		const customerExist = await models.CustomerInformation.findOne({
+			where: {
+				[Op.or]: [{ email }, { username }],
+			},
+		});
+
+		if (customerExist)
+			return res.status(400).json({ error: "Username or Email existed" });
 
 		const customer = await models.CustomerInformation.create({
 			name,
 			email,
 			phone,
 			gender,
+			username,
+			password,
+			birthday,
+			avatar: image.path,
 		});
 
 		return res
@@ -66,6 +88,7 @@ exports.update = async (req, res) => {
 	try {
 		const data = req.body;
 		const schema = joi.object().keys(validate_schema);
+		const image = req.file;
 
 		const { error, value } = schema.validate(data);
 
@@ -73,7 +96,9 @@ exports.update = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		let { name, email, phone, gender } = data;
+		if (!image) return res.status(400).json({ error: "Image is required" });
+
+		let { name, email, gender, phone, username, password, birthday } = data;
 
 		const customer = await models.CustomerInformation.findOne({
 			where: { id: req.params.id },
@@ -83,19 +108,25 @@ exports.update = async (req, res) => {
 			return res.status(404).json({ error: "Customer not found" });
 
 		const customerExist = await models.CustomerInformation.findOne({
-			where: { email, phone },
+			where: {
+				[Op.or]: [{ email }, { username }],
+			},
 		});
 
 		if (customerExist)
 			return res
 				.status(404)
-				.json({ error: "Email or Phone already exist" });
+				.json({ error: "Username or Email already exist" });
 
 		customer.update({
 			name,
 			email,
 			phone,
 			gender,
+			username,
+			password,
+			birthday,
+			avatar: image.path,
 		});
 
 		return res
