@@ -31,3 +31,9 @@ npm run initDB
 # start the project
 npm run start
 ```
+
+Test user information
+```json
+admin@email.com
+password
+```
