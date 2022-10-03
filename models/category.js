@@ -24,6 +24,11 @@ module.exports = (sequelize, DataTypes) => {
 			parent_id: DataTypes.INTEGER,
 		},
 		{
+			hooks: {
+				beforeFind: (options) => {
+					options.order = [["createdAt", "DESC"]];
+				},
+			},
 			sequelize,
 			modelName: "Category",
 		}

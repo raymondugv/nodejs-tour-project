@@ -1,5 +1,8 @@
 "use strict";
 const { Model } = require("sequelize");
+const bcrypt = require("bcryptjs");
+const salt = 10;
+
 module.exports = (sequelize, DataTypes) => {
 	class User extends Model {
 		/**
@@ -9,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
 		 */
 		static associate(models) {
 			this.belongsTo(models.Role, {
-				as: "role",
+				as: "roleInfo",
 				foreignKey: "role_id",
 				onUpdate: "NO ACTION",
 				onDelete: "NO ACTION",
@@ -25,6 +28,37 @@ module.exports = (sequelize, DataTypes) => {
 			role_id: DataTypes.INTEGER,
 		},
 		{
+			defaultScope: {
+				attributes: { exclude: ["password"] },
+			},
+			scopes: {
+				withPassword: {
+					attributes: {},
+				},
+			},
+			hooks: {
+				beforeFind: (options) => {
+					options.include = {
+						all: true,
+						nested: true,
+						attributes: {
+							exclude: ["id", "createdAt", "updatedAt"],
+						},
+					};
+					options.order = [
+						["createdAt", "DESC"],
+						["id", "DESC"],
+					];
+				},
+				beforeCreate: (user, options) => {
+					user.password = bcrypt.hashSync(user.password, salt);
+				},
+				beforeUpdate: (user, options) => {
+					if (user.changed("password")) {
+						user.password = bcrypt.hashSync(user.password, salt);
+					}
+				},
+			},
 			sequelize,
 			modelName: "User",
 		}
