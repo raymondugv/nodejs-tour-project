@@ -1,6 +1,7 @@
 # nodejs-tour-project
 
 Config your database credential at config/config.json
+
 ```json
 "development": {
 	"username": "root",
@@ -22,6 +23,7 @@ Config your database credential at config/config.json
 ```
 
 Run below command to start the server
+
 ```shell
 # first run to init Database
 npm run initDB
