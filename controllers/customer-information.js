@@ -58,7 +58,7 @@ exports.create = async (req, res) => {
 
 		const customerExist = await models.CustomerInformation.findOne({
 			where: {
-				[Op.or]: [{ email }, { username }],
+				[Op.or]: [{ email }, { username }, { phone }],
 			},
 		});
 
@@ -109,7 +109,7 @@ exports.update = async (req, res) => {
 
 		const customerExist = await models.CustomerInformation.findOne({
 			where: {
-				[Op.or]: [{ email }, { username }],
+				[Op.or]: [{ email }, { username }, { phone }],
 			},
 		});
 
