@@ -7,7 +7,7 @@ require("dotenv").config();
 const auth = require("./middleware/auth");
 const app = express();
 
-const whitelist = ["http://localhost:3000", "http://localhost:8000"];
+const whitelist = ["*"];
 const corsOptions = {
 	origin: (origin, callback) => {
 		if (!origin || whitelist.indexOf(origin) !== -1) {
