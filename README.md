@@ -31,3 +31,11 @@ npm run initDB
 # start the project
 npm run start
 ```
+
+Test user information
+```json
+admin@email.com
+password
+```
+
+API document at https://documenter.getpostman.com/view/21583062/VUr1GCqG#intro
