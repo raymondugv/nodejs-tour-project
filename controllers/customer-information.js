@@ -1,6 +1,7 @@
 const models = require("../models");
 const joi = require("joi");
 const { Op } = require("sequelize");
+const { custom } = require("joi");
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -105,25 +106,31 @@ exports.update = async (req, res) => {
 			where: { id: req.params.id },
 		});
 
+		if (!customer)
+			return res.status(404).json({ error: "Customer not found" });
+
 		let avatar = customer.avatar;
 
 		if (req.file) {
 			avatar = req.file;
 		}
 
-		if (!customer)
-			return res.status(404).json({ error: "Customer not found" });
+		if (
+			customer.email !== email ||
+			customer.username !== username ||
+			customer.phone !== phone
+		) {
+			const customerExist = await models.CustomerInformation.findOne({
+				where: {
+					[Op.or]: [{ email }, { username }, { phone }],
+				},
+			});
 
-		const customerExist = await models.CustomerInformation.findOne({
-			where: {
-				[Op.or]: [{ email }, { username }, { phone }],
-			},
-		});
-
-		if (customerExist)
-			return res
-				.status(404)
-				.json({ error: "Username or Email already exist" });
+			if (customerExist)
+				return res
+					.status(404)
+					.json({ error: "Username, Email or Phone already exist" });
+		}
 
 		customer.update({
 			name,
