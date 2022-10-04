@@ -53,14 +53,16 @@ exports.create = async (req, res) => {
 
 		let { name, email, gender, phone, username, password, birthday } = data;
 
-		const customerExist = await models.CustomerInformation.findOne({
-			where: {
-				[Op.or]: [{ email }, { username }, { phone }],
-			},
-		});
+		const fieldToCheck = ["email", "username", "phone"];
 
-		if (customerExist)
-			return res.status(400).json({ error: "Username or Email existed" });
+		for (let field of fieldToCheck) {
+			const customerExist = await models.CustomerInformation.findOne({
+				where: { [field]: data[field] },
+			});
+
+			if (customerExist)
+				return res.status(400).json({ error: `${field} existed` });
+		}
 
 		const customer = await models.CustomerInformation.create({
 			name,
