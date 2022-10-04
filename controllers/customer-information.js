@@ -10,7 +10,6 @@ const validate_schema = {
 	username: joi.string().required(),
 	password: joi.string().required(),
 	birthday: joi.date(),
-	avatar: joi.string(),
 };
 
 exports.index = async (req, res) => {
