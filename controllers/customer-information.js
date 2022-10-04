@@ -13,6 +13,8 @@ const validate_schema = {
 	birthday: joi.date(),
 };
 
+const fieldToCheck = ["email", "username", "phone"];
+
 exports.index = async (req, res) => {
 	try {
 		const customers = await models.CustomerInformation.findAll();
@@ -53,14 +55,14 @@ exports.create = async (req, res) => {
 
 		let { name, email, gender, phone, username, password, birthday } = data;
 
-		const customerExist = await models.CustomerInformation.findOne({
-			where: {
-				[Op.or]: [{ email }, { username }, { phone }],
-			},
-		});
+		for (let field of fieldToCheck) {
+			const customerExist = await models.CustomerInformation.findOne({
+				where: { [field]: data[field] },
+			});
 
-		if (customerExist)
-			return res.status(400).json({ error: "Username or Email existed" });
+			if (customerExist)
+				return res.status(400).json({ error: `${field} existed` });
+		}
 
 		const customer = await models.CustomerInformation.create({
 			name,
@@ -114,8 +116,6 @@ exports.update = async (req, res) => {
 		if (req.file) {
 			avatar = req.file;
 		}
-
-		const fieldToCheck = ["email", "username", "phone"];
 
 		for (let field of fieldToCheck) {
 			if (customer[field] !== data[field]) {
