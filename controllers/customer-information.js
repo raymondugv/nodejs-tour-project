@@ -115,22 +115,22 @@ exports.update = async (req, res) => {
 			avatar = req.file;
 		}
 
-		if (
-			customer.email !== email ||
-			customer.username !== username ||
-			customer.phone !== phone
-		) {
-			const customerExist = await models.CustomerInformation.findOne({
-				where: {
-					[Op.or]: [{ email }, { username }, { phone }],
-				},
-			});
+		// if (
+		// 	customer.email !== email ||
+		// 	customer.username !== username ||
+		// 	customer.phone !== phone
+		// ) {
+		// 	const customerExist = await models.CustomerInformation.findOne({
+		// 		where: {
+		// 			[Op.or]: [{ email }, { username }, { phone }],
+		// 		},
+		// 	});
 
-			if (customerExist)
-				return res
-					.status(404)
-					.json({ error: "Username, Email or Phone already exist" });
-		}
+		// 	if (customerExist)
+		// 		return res
+		// 			.status(404)
+		// 			.json({ error: "Username, Email or Phone already exist" });
+		// }
 
 		customer.update({
 			name,
