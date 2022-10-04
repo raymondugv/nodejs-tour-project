@@ -53,10 +53,16 @@ module.exports = (sequelize, DataTypes) => {
 				beforeCreate: (user, options) => {
 					user.password = bcrypt.hashSync(user.password, salt);
 				},
+				afterCreate: (user, options) => {
+					delete user.dataValues.password;
+				},
 				beforeUpdate: (user, options) => {
 					if (user.changed("password")) {
 						user.password = bcrypt.hashSync(user.password, salt);
 					}
+				},
+				afterUpdate: (user, options) => {
+					delete user.dataValues.password;
 				},
 			},
 			sequelize,
