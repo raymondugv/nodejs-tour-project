@@ -8,7 +8,7 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
 		 */
-		await queryInterface.changeColumn("customerinformations", "birthday", {
+		await queryInterface.changeColumn("CustomerInformations", "birthday", {
 			type: Sequelize.DATEONLY,
 		});
 	},
@@ -20,7 +20,7 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.dropTable('users');
 		 */
-		await queryInterface.changeColumn("customerinformations", "birthday", {
+		await queryInterface.changeColumn("CustomerInformations", "birthday", {
 			type: Sequelize.DATE,
 		});
 	},
