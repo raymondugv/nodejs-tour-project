@@ -83,7 +83,15 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
 	try {
 		const data = req.body;
-		const schema = joi.object().keys(validate_schema);
+		const schema = joi.object().keys({
+			name: joi.string().required(),
+			email: joi.string().email().required(),
+			gender: joi.number().required(),
+			phone: joi.string().required(),
+			username: joi.string().required(),
+			password: joi.string(),
+			birthday: joi.date(),
+		});
 		const image = req.file;
 
 		const { error, value } = schema.validate(data);
