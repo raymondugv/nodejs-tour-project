@@ -13,6 +13,8 @@ const validate_schema = {
 	birthday: joi.date(),
 };
 
+const fieldToCheck = ["email", "username", "phone"];
+
 exports.index = async (req, res) => {
 	try {
 		const customers = await models.CustomerInformation.findAll();
@@ -52,8 +54,6 @@ exports.create = async (req, res) => {
 		if (!image) return res.status(400).json({ error: "Image is required" });
 
 		let { name, email, gender, phone, username, password, birthday } = data;
-
-		const fieldToCheck = ["email", "username", "phone"];
 
 		for (let field of fieldToCheck) {
 			const customerExist = await models.CustomerInformation.findOne({
@@ -116,8 +116,6 @@ exports.update = async (req, res) => {
 		if (req.file) {
 			avatar = req.file;
 		}
-
-		const fieldToCheck = ["email", "username", "phone"];
 
 		for (let field of fieldToCheck) {
 			if (customer[field] !== data[field]) {
