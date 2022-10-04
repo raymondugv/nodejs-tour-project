@@ -23,7 +23,7 @@ module.exports = async (email, subject, emailTemplate, replacements = null) => {
 	return transporter.sendMail(mainOptions, (err, info) => {
 		if (err) {
 			console.log({ err });
-			return err;
+			return;
 		} else {
 			console.log("Message sent: " + info.response);
 			return info.response;
