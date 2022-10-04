@@ -21,17 +21,19 @@ const newBookingEvent = eventEmitter.addListener(
 
 		await sendEmail(
 			"staff@nodetour.js",
-			"New Booking received" + booking.booking_number,
-			"../emails/staff/newBooking.html",
+			"New Booking received " + booking.booking_number,
+			"../email/staff/newBooking.html",
 			fields
 		);
 
-		await sendEmail(
-			"customer@nodetour.js",
-			"New Booking Customer" + booking.booking_number,
-			"../emails/customer/newBooking.html",
-			fields
-		);
+		setTimeout(async () => {
+			await sendEmail(
+				"customer@nodetour.js",
+				"New Booking Customer " + booking.booking_number,
+				"../email/customer/newBooking.html",
+				fields
+			);
+		}, 1000);
 	}
 );
 
