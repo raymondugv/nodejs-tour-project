@@ -1,11 +1,7 @@
 const models = require("../models");
 const joi = require("joi");
 const event = require("events");
-const { staffBookingCreated } = require("../events/StaffEvent");
-const {
-	customerBookingCreated,
-	customerBookingUpdate,
-} = require("../events/CustomerEvent");
+const { newBookingEvent } = require("../events/newBookingEvent");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
@@ -65,8 +61,7 @@ exports.create = async (req, res) => {
 			where: { id: bookingCreate.id },
 		});
 
-		staffBookingCreated.emit("booking.created", booking);
-		customerBookingCreated.emit("booking.created", booking);
+		newBookingEvent.emit("booking.created", booking);
 
 		return res
 			.status(201)
