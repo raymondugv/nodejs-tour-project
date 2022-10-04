@@ -92,7 +92,6 @@ exports.update = async (req, res) => {
 			password: joi.string(),
 			birthday: joi.date(),
 		});
-		const image = req.file;
 
 		const { error, value } = schema.validate(data);
 
@@ -100,13 +99,17 @@ exports.update = async (req, res) => {
 			return res.status(400).json({ error });
 		}
 
-		if (!image) return res.status(400).json({ error: "Image is required" });
-
 		let { name, email, gender, phone, username, password, birthday } = data;
 
 		const customer = await models.CustomerInformation.findOne({
 			where: { id: req.params.id },
 		});
+
+		let avatar = customer.avatar;
+
+		if (req.file) {
+			avatar = req.file;
+		}
 
 		if (!customer)
 			return res.status(404).json({ error: "Customer not found" });
@@ -130,7 +133,7 @@ exports.update = async (req, res) => {
 			username,
 			password,
 			birthday,
-			avatar: image.path,
+			avatar: avatar,
 		});
 
 		return res
