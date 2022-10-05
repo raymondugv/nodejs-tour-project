@@ -24,7 +24,12 @@ exports.index = async (req, res) => {
 			offset,
 		});
 
-		const response = getPagingData(customers, page, limit);
+		const response = getPagingData(
+			"customer-informations",
+			customers,
+			page,
+			limit
+		);
 
 		return res.status(200).json({ customers: response });
 	} catch (error) {

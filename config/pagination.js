@@ -5,13 +5,38 @@ const getPagination = (page = 1, size) => {
 	return { limit, offset };
 };
 
-const getPagingData = (data, page, limit) => {
+const getPagingData = (table, data, page, limit) => {
 	const { count: totalItems, rows } = data;
+
+	const maxId = Math.max.apply(
+		Math,
+		rows.map((o) => o.id)
+	);
+
+	const minId = Math.min.apply(
+		Math,
+		rows.map((o) => o.id)
+	);
 
 	const currentPage = page ? +page : 0;
 	const totalPages = Math.ceil(totalItems / limit);
 
-	return { totalItems, rows, totalPages, currentPage };
+	return {
+		total: totalItems,
+		per_page: limit,
+		current_page: currentPage,
+		last_page: totalPages,
+		first_page_url: `/${table}?size=${limit}&page=1`,
+		last_page_url: `/${table}?size=${limit}&page=${totalPages}`,
+		next_page_url: `/${table}?size=${limit}&page=${currentPage + 1}`,
+		prev_page_url:
+			currentPage == 1
+				? null
+				: `/${table}?size=${limit}&page=${currentPage - 1}`,
+		from: maxId,
+		to: minId,
+		data: rows,
+	};
 };
 
 module.exports = { getPagination, getPagingData };
