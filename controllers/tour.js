@@ -29,7 +29,9 @@ exports.index = async (req, res) => {
 		if (req.user.roleId !== 1)
 			tours = tours.filter((tour) => tour.owner === req.user.id);
 
-		const response = getPagingData(tours, page, limit);
+		const response = getPagingData("tours", tours, page, limit);
+
+		return res.json(response);
 
 		return res.status(200).json({ tours: response });
 	} catch (error) {
