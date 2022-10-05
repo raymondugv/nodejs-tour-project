@@ -79,6 +79,9 @@ module.exports = (sequelize, DataTypes) => {
 						salt
 					);
 				},
+				afterCreate: (customer, options) => {
+					delete customer.dataValues.password;
+				},
 				beforeUpdate: (customer, options) => {
 					if (customer.changed("password")) {
 						customer.password = bcrypt.hashSync(
@@ -86,6 +89,9 @@ module.exports = (sequelize, DataTypes) => {
 							salt
 						);
 					}
+				},
+				afterUpdate: (customer, options) => {
+					delete customer.dataValues.password;
 				},
 			},
 			sequelize,

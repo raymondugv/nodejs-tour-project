@@ -1,7 +1,6 @@
 const models = require("../models");
 const joi = require("joi");
-const { Op } = require("sequelize");
-const { custom } = require("joi");
+const { getPagination, getPagingData } = require("../config/pagination");
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -17,9 +16,17 @@ const fieldToCheck = ["email", "username", "phone"];
 
 exports.index = async (req, res) => {
 	try {
-		const customers = await models.CustomerInformation.findAll();
+		const { page, size } = req.query;
+		const { limit, offset } = getPagination(page, size);
 
-		return res.status(200).json({ customers });
+		const customers = await models.CustomerInformation.findAndCountAll({
+			limit,
+			offset,
+		});
+
+		const response = getPagingData(customers, page, limit);
+
+		return res.status(200).json({ customers: response });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
