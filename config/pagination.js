@@ -1,6 +1,6 @@
-const getPagination = (page, size) => {
+const getPagination = (page = 1, size) => {
 	const limit = size ? +size : 3;
-	const offset = page ? page * limit : 0;
+	const offset = page ? (page - 1) * limit : 0;
 
 	return { limit, offset };
 };
