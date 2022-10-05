@@ -31,8 +31,6 @@ exports.index = async (req, res) => {
 
 		const response = getPagingData("tours", tours, page, limit);
 
-		return res.json(response);
-
 		return res.status(200).json({ tours: response });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
