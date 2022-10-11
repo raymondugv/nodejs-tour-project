@@ -1,8 +1,11 @@
-const getPagination = (page = 1, size) => {
+const getPagination = (query) => {
+	const page = query.page ? +query.page : 1;
+	const size = query.size ? +query.size : 10;
+
 	const limit = size ? +size : 3;
 	const offset = page ? (page - 1) * limit : 0;
 
-	return { limit, offset };
+	return { limit, offset, page };
 };
 
 const getPagingData = (table, data, page, limit) => {
@@ -27,10 +30,7 @@ const getPagingData = (table, data, page, limit) => {
 		current_page: currentPage,
 		last_page: totalPages,
 		first_page_url: `/${table}?size=${limit}&page=1`,
-		last_page_url:
-			totalPages == 0
-				? `/${table}?size=${limit}&page=${totalPages + 1}`
-				: `/${table}?size=${limit}&page=${totalPages}`,
+		last_page_url: `/${table}?size=${limit}&page=${totalPages}`,
 		next_page_url: `/${table}?size=${limit}&page=${currentPage + 1}`,
 		prev_page_url:
 			currentPage == 1
