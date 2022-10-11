@@ -1,6 +1,6 @@
 "use strict";
 const { faker } = require("@faker-js/faker");
-const exchange = require("../config/currencyTransfer");
+const exchange = require("@config/currencyTransfer");
 
 const tours = [];
 const createRandomTours = () => {

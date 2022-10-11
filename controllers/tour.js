@@ -1,7 +1,7 @@
 const models = require("@models");
 const joi = require("joi");
 const fs = require("fs");
-const { getPagination, getPagingData } = require("../config/pagination");
+const { getPagination, getPagingData } = require("@config/pagination");
 
 const validate_schema = {
 	title: joi.string().required(),

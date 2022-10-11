@@ -3,7 +3,7 @@ const router = express.Router();
 const verifyRoles = require("@middlewares/permission");
 const controllers = require("@controllers/customer-information");
 const multer = require("multer");
-const storage = require("../config/uploadConfig");
+const storage = require("@config/uploadConfig");
 
 router.get("/", controllers.index);
 router.get("/:id", verifyRoles, controllers.show);

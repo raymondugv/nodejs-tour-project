@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
 const { login, logout } = require("../tests/auth-test");
-const { ROLE } = require("../config/data");
+const { ROLE } = require("@config/data");
 
 const random = Array(5)
 	.fill()

@@ -1,6 +1,5 @@
 const models = require("@models");
 const joi = require("joi");
-const event = require("events");
 const { staffBookingCreated } = require("@events/StaffEvent");
 const {
 	customerBookingCreated,

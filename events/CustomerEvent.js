@@ -1,7 +1,7 @@
 const event = require("events");
 const eventEmitter = new event.EventEmitter();
 const sendEmail = require("@controllers/sendEmail");
-const exchange = require("../config/currencyTransfer");
+const exchange = require("@config/currencyTransfer");
 
 const customerBookingCreated = eventEmitter.addListener(
 	"booking.created",
@@ -9,7 +9,7 @@ const customerBookingCreated = eventEmitter.addListener(
 		await sendEmail(
 			booking.customer.email,
 			"Booking Confirmation " + booking.booking_number,
-			"../config/email-templates/newBookingCustomer.html",
+			"@config/email-templates/newBookingCustomer.html",
 			{
 				bookingNumber: booking.booking_number,
 				createdAt: booking.createdAt,
@@ -31,7 +31,7 @@ const customerBookingUpdate = eventEmitter.addListener(
 		await sendEmail(
 			booking.customer.email,
 			"Booking Updated " + booking.booking_number,
-			"../config/email-templates/updateBookingCustomer.html",
+			"@config/email-templates/updateBookingCustomer.html",
 			{
 				bookingNumber: booking.booking_number,
 			}
