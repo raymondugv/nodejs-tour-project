@@ -18,7 +18,7 @@ const getPagingData = (table, data, page, limit) => {
 		rows.map((o) => o.id)
 	);
 
-	const currentPage = page ? +page : 0;
+	const currentPage = page ? +page : 1;
 	const totalPages = Math.ceil(totalItems / limit);
 
 	return {
