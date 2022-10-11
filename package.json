@@ -45,6 +45,7 @@
 		"@routes": "routes",
 		"@config": "config",
 		"@logs": "logs",
-		"@tests": "tests"
+		"@tests": "tests",
+		"@events": "events"
 	}
 }
