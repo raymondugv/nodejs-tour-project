@@ -1,3 +1,4 @@
+const { isError } = require("joi");
 const { Op } = require("sequelize");
 
 const sortFunction = (field) => {
@@ -19,39 +20,105 @@ const sortFunction = (field) => {
 };
 
 const filterFunction = (query) => {
-	const order = {};
+	const where = {};
+	const { page, size, ...rest } = query;
 
-	if (query.greater) {
-		const [key, value] = query.greater.split(",");
-		order[key] = { [Op.gt]: value };
-	}
+	Object.keys(rest).forEach((key) => {
+		switch (key) {
+			case "greater":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.gt]: value,
+				};
+				break;
+			case "greater_or_equal":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.gte]: value,
+				};
+				break;
+			case "less":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.lt]: value,
+				};
+				break;
+			case "less_or_equal":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.lte]: value,
+				};
+				break;
+			case "like":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.like]: value,
+				};
+				break;
+			case "not_like":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.notLike]: value,
+				};
+				break;
+			case "between":
+				var [key, value1, value2] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.between]: [value1, value2],
+				};
+				break;
+			case "not_between":
+				var [key, value1, value2] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.notBetween]: [value1, value2],
+				};
+				break;
+			case "equal":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.eq]: value,
+				};
+				break;
+			case "not_equal":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.ne]: value,
+				};
+				break;
+			case "startsWith":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.startsWith]: value,
+				};
+				break;
+			case "endsWith":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					...(where[key] || {}),
+					[Op.endsWith]: value,
+				};
+				break;
+			case "substring":
+				var [key, value] = rest[key].split(",");
+				where[key] = {
+					[Op.substring]: value,
+				};
+				break;
+		}
+	});
 
-	if (query.less) {
-		const [key, value] = query.less.split(",");
-		order[key] = { [Op.lt]: value };
-	}
-
-	if (query.greater_or_equal) {
-		const [key, value] = query.greater_or_equal.split(",");
-		order[key] = { [Op.gte]: value };
-	}
-
-	if (query.less_or_equal) {
-		const [key, value] = query.less_or_equal.split(",");
-		order[key] = { [Op.lte]: value };
-	}
-
-	if (query.between) {
-		const [key, value1, value2] = query.between.split(",");
-		order[key] = { [Op.between]: [value1, value2] };
-	}
-
-	if (query.not_between) {
-		const [key, value1, value2] = query.not_between.split(",");
-		order[key] = { [Op.notBetween]: [value1, value2] };
-	}
-
-	return order;
+	return where;
 };
 
 module.exports = { filterFunction, sortFunction };
