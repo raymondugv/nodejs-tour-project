@@ -8,7 +8,7 @@ const getPagination = (query) => {
 	return { limit, offset, page };
 };
 
-const getPagingData = (table, data, page, limit) => {
+const getPagingData = (endpoint, data, page, limit) => {
 	const { count: totalItems, rows } = data;
 
 	const maxId = Math.max.apply(
@@ -29,13 +29,13 @@ const getPagingData = (table, data, page, limit) => {
 		per_page: limit,
 		current_page: currentPage,
 		last_page: totalPages,
-		first_page_url: `/${table}?size=${limit}&page=1`,
-		last_page_url: `/${table}?size=${limit}&page=${totalPages}`,
-		next_page_url: `/${table}?size=${limit}&page=${currentPage + 1}`,
+		first_page_url: `/${endpoint}?size=${limit}&page=1`,
+		last_page_url: `/${endpoint}?size=${limit}&page=${totalPages}`,
+		next_page_url: `/${endpoint}?size=${limit}&page=${currentPage + 1}`,
 		prev_page_url:
 			currentPage == 1
 				? null
-				: `/${table}?size=${limit}&page=${currentPage - 1}`,
+				: `/${endpoint}?size=${limit}&page=${currentPage - 1}`,
 		from: maxId,
 		to: minId,
 		data: rows,
