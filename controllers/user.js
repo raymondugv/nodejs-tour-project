@@ -2,6 +2,7 @@ const models = require("@models");
 const joi = require("joi");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const { getPagination, getPagingData } = require("@config/pagination");
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -82,9 +83,17 @@ exports.logout = async (req, res) => {
 // index
 exports.index = async (req, res) => {
 	try {
-		let users = await models.User.findAll();
+		const { page, size } = req.query;
+		const { limit, offset } = getPagination(page, size);
 
-		return res.status(200).json({ users });
+		let users = await models.User.findAndCountAll({
+			limit,
+			offset,
+		});
+
+		const response = getPagingData("users", users, page, limit);
+
+		return res.status(200).json({ response });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}
