@@ -95,14 +95,14 @@ const filterFunction = (query) => {
 					[Op.ne]: value,
 				};
 				break;
-			case "startsWith":
+			case "starts_with":
 				var [key, value] = rest[key].split(",");
 				where[key] = {
 					...(where[key] || {}),
 					[Op.startsWith]: value,
 				};
 				break;
-			case "endsWith":
+			case "ends_with":
 				var [key, value] = rest[key].split(",");
 				where[key] = {
 					...(where[key] || {}),
