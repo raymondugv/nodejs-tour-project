@@ -1,11 +1,11 @@
 const models = require("../models");
 const joi = require("joi");
 const event = require("events");
-const { staffBookingCreated } = require("../events/StaffEvent");
+const { staffBookingCreated } = require("@events/StaffEvent");
 const {
 	customerBookingCreated,
 	customerBookingUpdate,
-} = require("../events/CustomerEvent");
+} = require("@events/CustomerEvent");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
