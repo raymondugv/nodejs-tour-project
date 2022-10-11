@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
+const app = require("@app");
 
 const login = async (user, password) => {
 	return await request(app)
