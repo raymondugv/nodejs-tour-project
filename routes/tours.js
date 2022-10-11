@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controllers/tour");
-const verifyRoles = require("../middleware/permission");
+const verifyRoles = require("@middlewares/permission");
 const multer = require("multer");
 const storage = require("../config/uploadConfig");
 

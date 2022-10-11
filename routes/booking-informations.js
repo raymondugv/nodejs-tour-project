@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const verifyRoles = require("../middleware/permission");
+const verifyRoles = require("@middlewares/permission");
 const controllers = require("../controllers/booking-information");
 
 router.get("/", controllers.index);
