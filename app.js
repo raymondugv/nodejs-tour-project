@@ -1,10 +1,12 @@
+require("module-alias/register");
+
 const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
-const auth = require("./middleware/auth");
+const auth = require("@middlewares/auth");
 const app = express();
 
 const whitelist = ["*"];
