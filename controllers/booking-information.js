@@ -3,7 +3,7 @@ const joi = require("joi");
 const { staffBookingCreated } = require("@events/StaffEvent");
 
 const { getPagination, getPagingData } = require("@config/pagination");
-const { filterFunction } = require("../config/filterAndSort").default;
+const { filterFunction } = require("../config/filterAndSort");
 
 const {
 	customerBookingCreated,
