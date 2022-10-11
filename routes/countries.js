@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/country");
+const controller = require("@controllers/country");
 const verifyRoles = require("@middlewares/permission");
 
 router.get("/", controller.index);

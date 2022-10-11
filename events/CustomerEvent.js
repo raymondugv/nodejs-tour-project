@@ -1,6 +1,6 @@
 const event = require("events");
 const eventEmitter = new event.EventEmitter();
-const sendEmail = require("../controllers/sendEmail");
+const sendEmail = require("@controllers/sendEmail");
 const exchange = require("../config/currencyTransfer");
 
 const customerBookingCreated = eventEmitter.addListener(

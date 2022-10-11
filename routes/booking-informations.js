@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const verifyRoles = require("@middlewares/permission");
-const controllers = require("../controllers/booking-information");
+const controllers = require("@controllers/booking-information");
 
 router.get("/", controllers.index);
 router.get("/:id", verifyRoles, controllers.show);
