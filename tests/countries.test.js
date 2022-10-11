@@ -1,7 +1,7 @@
 const request = require("supertest");
-const app = require("../app");
+const app = require("@app");
 
-const { login, logout } = require("../tests/auth-test");
+const { login, logout } = require("@tests/auth-test");
 
 let token = "";
 

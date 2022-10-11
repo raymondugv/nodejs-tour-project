@@ -1,5 +1,7 @@
-const models = require("../models");
+const models = require("@models");
 const joi = require("joi");
+const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("../config/filterAndSort");
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -7,9 +9,18 @@ const validate_schema = {
 
 exports.index = async (req, res) => {
 	try {
-		const countries = await models.Country.findAll();
+		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
 
-		return res.status(200).json({ countries });
+		const countries = await models.Country.findAndCountAll({
+			limit,
+			offset,
+			where: filter,
+		});
+
+		const response = getPagingData("countries", countries, page, limit);
+
+		return res.status(200).json({ countries: response });
 	} catch (err) {
 		return res.status(500).json({ error: err.message });
 	}
