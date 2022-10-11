@@ -37,5 +37,14 @@
 		"nodemon": "^2.0.19",
 		"superagent": "^8.0.0",
 		"supertest": "^6.2.4"
+	},
+	"_moduleAliases": {
+		"@models": "models",
+		"@controllers": "controllers",
+		"@middlewares": "middlewares",
+		"@routes": "routes",
+		"@config": "config",
+		"@logs": "logs",
+		"@tests": "tests"
 	}
 }
