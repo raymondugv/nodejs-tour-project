@@ -1,13 +1,14 @@
 const models = require("@models");
 const joi = require("joi");
 const { staffBookingCreated } = require("@events/StaffEvent");
+
 const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("../config/filterAndSort").default;
 
 const {
 	customerBookingCreated,
 	customerBookingUpdate,
 } = require("@events/CustomerEvent");
-const { filterFunction } = require("../config/filterAndSort");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
