@@ -2,6 +2,7 @@ const models = require("@models");
 const joi = require("joi");
 const fs = require("fs");
 const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("@config/filterAndSort");
 
 const validate_schema = {
 	title: joi.string().required(),
@@ -19,10 +20,12 @@ const validate_schema = {
 exports.index = async (req, res) => {
 	try {
 		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
 
 		let tours = await models.Tour.findAndCountAll({
 			limit,
 			offset,
+			where: filter,
 		});
 
 		if (req.user.roleId !== 1)
