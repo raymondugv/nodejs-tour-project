@@ -3,7 +3,7 @@ const {
 	PERMISSION,
 	PERMISSION_ROLE,
 	ACTIVE_FIELD,
-} = require("../config/data");
+} = require("@config/data");
 
 const isOwner = (user, item) => {
 	if (item) {
