@@ -83,8 +83,7 @@ exports.logout = async (req, res) => {
 // index
 exports.index = async (req, res) => {
 	try {
-		const { page, size } = req.query;
-		const { limit, offset } = getPagination(page, size);
+		const { limit, offset, page } = getPagination(req.query);
 
 		let users = await models.User.findAndCountAll({
 			limit,
@@ -93,7 +92,7 @@ exports.index = async (req, res) => {
 
 		const response = getPagingData("users", users, page, limit);
 
-		return res.status(200).json({ response });
+		return res.status(200).json({ users: response });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}

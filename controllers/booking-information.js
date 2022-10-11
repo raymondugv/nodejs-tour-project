@@ -1,6 +1,8 @@
 const models = require("@models");
 const joi = require("joi");
 const { staffBookingCreated } = require("@events/StaffEvent");
+const { getPagination, getPagingData } = require("@config/pagination");
+
 const {
 	customerBookingCreated,
 	customerBookingUpdate,
@@ -15,9 +17,21 @@ const validate_schema = {
 
 exports.index = async (req, res) => {
 	try {
-		const bookings = await models.BookingInformation.findAll();
+		const { limit, offset, page } = getPagination(req.query);
 
-		return res.status(200).json({ bookings });
+		const bookings = await models.BookingInformation.findAndCountAll({
+			limit,
+			offset,
+		});
+
+		const response = getPagingData(
+			"booking-informations",
+			bookings,
+			page,
+			limit
+		);
+
+		return res.status(200).json({ booking_informations: response });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}

@@ -18,8 +18,7 @@ const validate_schema = {
 
 exports.index = async (req, res) => {
 	try {
-		const { page, size } = req.query;
-		const { limit, offset } = getPagination(page, size);
+		const { limit, offset, page } = getPagination(req.query);
 
 		let tours = await models.Tour.findAndCountAll({
 			limit,
