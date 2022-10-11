@@ -1,4 +1,3 @@
-const { isError } = require("joi");
 const { Op } = require("sequelize");
 
 const sortFunction = (field) => {
