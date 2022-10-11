@@ -7,6 +7,7 @@ const {
 	customerBookingCreated,
 	customerBookingUpdate,
 } = require("@events/CustomerEvent");
+const { filterFunction } = require("../config/filterAndSort");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
@@ -18,10 +19,12 @@ const validate_schema = {
 exports.index = async (req, res) => {
 	try {
 		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
 
 		const bookings = await models.BookingInformation.findAndCountAll({
 			limit,
 			offset,
+			where: filter,
 		});
 
 		const response = getPagingData(

@@ -1,6 +1,7 @@
 const models = require("@models");
 const joi = require("joi");
 const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("../config/filterAndSort");
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -16,12 +17,13 @@ const fieldToCheck = ["email", "username", "phone"];
 
 exports.index = async (req, res) => {
 	try {
-		const { page, size } = req.query;
-		const { limit, offset } = getPagination(page, size);
+		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
 
 		const customers = await models.CustomerInformation.findAndCountAll({
 			limit,
 			offset,
+			where: filter,
 		});
 
 		const response = getPagingData(
