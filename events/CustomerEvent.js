@@ -8,7 +8,7 @@ const customerBookingCreated = eventEmitter.addListener(
 	async (booking) => {
 		await sendEmail(
 			booking.customer.email,
-			"Booking Confirmation " + booking.booking_number,
+			"Booking Confirmation for #" + booking.booking_number,
 			"@config/email-templates/newBookingCustomer.html",
 			{
 				bookingNumber: booking.booking_number,
@@ -30,7 +30,7 @@ const customerBookingUpdate = eventEmitter.addListener(
 	async (booking) => {
 		await sendEmail(
 			booking.customer.email,
-			"Booking Updated " + booking.booking_number,
+			"Booking #" + booking.booking_number + " updated",
 			"@config/email-templates/updateBookingCustomer.html",
 			{
 				bookingNumber: booking.booking_number,
