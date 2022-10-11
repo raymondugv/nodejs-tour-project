@@ -1,6 +1,6 @@
 const event = require("events");
 const eventEmitter = new event.EventEmitter();
-const models = require("../models");
+const models = require("@models");
 const sendEmail = require("@controllers/sendEmail");
 const exchange = require("../config/currencyTransfer");
 

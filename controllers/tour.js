@@ -1,4 +1,4 @@
-const models = require("../models");
+const models = require("@models");
 const joi = require("joi");
 const fs = require("fs");
 const { getPagination, getPagingData } = require("../config/pagination");

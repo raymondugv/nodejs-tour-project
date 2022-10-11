@@ -1,4 +1,4 @@
-const models = require("../models");
+const models = require("@models");
 const joi = require("joi");
 const validate_schema = {
 	name: joi.string().required(),
