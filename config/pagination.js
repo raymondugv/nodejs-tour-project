@@ -27,7 +27,10 @@ const getPagingData = (table, data, page, limit) => {
 		current_page: currentPage,
 		last_page: totalPages,
 		first_page_url: `/${table}?size=${limit}&page=1`,
-		last_page_url: `/${table}?size=${limit}&page=${totalPages}`,
+		last_page_url:
+			totalPages == 0
+				? `/${table}?size=${limit}&page=${totalPages + 1}`
+				: `/${table}?size=${limit}&page=${totalPages}`,
 		next_page_url: `/${table}?size=${limit}&page=${currentPage + 1}`,
 		prev_page_url:
 			currentPage == 1
