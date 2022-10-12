@@ -8,7 +8,7 @@ require("dotenv").config();
 import auth from "@middlewares/auth";
 import indexRoute from "@routes/index";
 import usersRoute from "@routes/users";
-import customerInformationRoute from "@routes/customer-informations";
+import customerInformationRoute from "@routes/customer_informations";
 import countriesRoute from "@routes/countries";
 import citiesRoute from "@routes/cities";
 import toursRoute from "@routes/tours";
