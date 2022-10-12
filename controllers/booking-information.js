@@ -1,28 +1,30 @@
-const models = require("@models");
-const joi = require("joi");
-const { staffBookingCreated } = require("@events/StaffEvent");
+import { BookingInformation } from "@models";
+import Joi from "joi";
+const { object, number, date } = Joi.types();
 
-const { getPagination, getPagingData } = require("@config/pagination");
-const { filterFunction } = require("../config/filterAndSort");
+import { staffBookingCreated } from "@events/StaffEvent";
 
-const {
+import { getPagination, getPagingData } from "@config/pagination";
+import { filterFunction } from "../config/filterAndSort";
+
+import {
 	customerBookingCreated,
 	customerBookingUpdate,
-} = require("@events/CustomerEvent");
+} from "@events/CustomerEvent";
 
 const validate_schema = {
-	tour_id: joi.number().required(),
-	customer_id: joi.number().required(),
-	number_of_pax: joi.number().required(),
-	departure_date: joi.date().required(),
+	tour_id: number.required(),
+	customer_id: number.required(),
+	number_of_pax: number.required(),
+	departure_date: date.required(),
 };
 
-exports.index = async (req, res) => {
+export async function index(req, res) {
 	try {
 		const { limit, offset, page } = getPagination(req.query);
 		const filter = filterFunction(req.query);
 
-		const bookings = await models.BookingInformation.findAndCountAll({
+		const bookings = await BookingInformation.findAndCountAll({
 			limit,
 			offset,
 			where: filter,
@@ -39,11 +41,11 @@ exports.index = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-};
+}
 
-exports.show = async (req, res) => {
+export async function show(req, res) {
 	try {
-		const booking = await models.BookingInformation.findOne({
+		const booking = await BookingInformation.findOne({
 			where: { id: req.params.id },
 		});
 
@@ -54,13 +56,13 @@ exports.show = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-};
+}
 
-exports.create = async (req, res) => {
+export async function create(req, res) {
 	try {
 		const data = req.body;
 
-		const schema = joi.object().keys(validate_schema);
+		const schema = object.keys(validate_schema);
 
 		const { error, value } = schema.validate(data);
 
@@ -70,7 +72,7 @@ exports.create = async (req, res) => {
 
 		const { tour_id, customer_id, number_of_pax, departure_date } = data;
 
-		const bookingCreate = await models.BookingInformation.create({
+		const bookingCreate = await BookingInformation.create({
 			tour_id,
 			customer_id,
 			number_of_pax,
@@ -78,12 +80,12 @@ exports.create = async (req, res) => {
 			owner: req.user.id,
 		});
 
-		const booking = await models.BookingInformation.findOne({
+		const booking = await BookingInformation.findOne({
 			where: { id: bookingCreate.id },
 		});
 
-		staffBookingCreated.emit("booking.created", booking);
-		customerBookingCreated.emit("booking.created", booking);
+		// staffBookingCreated.emit("booking.created", booking);
+		// customerBookingCreated.emit("booking.created", booking);
 
 		return res
 			.status(201)
@@ -91,18 +93,18 @@ exports.create = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-};
+}
 
-exports.update = async (req, res) => {
+export async function update(req, res) {
 	try {
 		const data = req.body;
-		const schema = joi.object().keys({
-			tour_id: joi.number().required(),
-			customer_id: joi.number().required(),
-			number_of_pax: joi.number().required(),
-			departure_date: joi.date().required(),
-			booking_status: joi.number(),
-			payment_status: joi.number(),
+		const schema = object().keys({
+			tour_id: number.required(),
+			customer_id: number.required(),
+			number_of_pax: number.required(),
+			departure_date: date.required(),
+			booking_status: number,
+			payment_status: number,
 		});
 
 		const { error, value } = schema.validate(data);
@@ -120,7 +122,7 @@ exports.update = async (req, res) => {
 			payment_status,
 		} = data;
 
-		const booking = await models.BookingInformation.findOne({
+		const booking = await BookingInformation.findOne({
 			where: { id: req.params.id },
 		});
 
@@ -142,11 +144,11 @@ exports.update = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-};
+}
 
-exports.destroy = async (req, res) => {
+export async function destroy(req, res) {
 	try {
-		const booking = await models.BookingInformation.findOne({
+		const booking = await BookingInformation.findOne({
 			where: { id: req.params.id },
 		});
 
@@ -166,4 +168,4 @@ exports.destroy = async (req, res) => {
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
-};
+}
