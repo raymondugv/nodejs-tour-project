@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"initDB": "npx sequelize-cli db:migrate:undo:all && npx sequelize-cli db:migrate && npx sequelize-cli db:seed:all",
-		"start": "nodemon ./bin/www",
+		"start": "nodemon --exec babel-node ./bin/www",
 		"test": "cross-env NODE_ENV=test jest --detectOpenHandles",
 		"pretest": "cross-env NODE_ENV=test npm run initDB"
 	},
@@ -33,6 +33,7 @@
 	"devDependencies": {
 		"@babel/cli": "^7.19.3",
 		"@babel/core": "^7.19.3",
+		"@babel/node": "^7.19.1",
 		"@babel/preset-env": "^7.19.4",
 		"@faker-js/faker": "^7.5.0",
 		"cross-env": "^7.0.3",
