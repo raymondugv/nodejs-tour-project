@@ -54,7 +54,7 @@
 		"@controllers": "./src/controllers",
 		"@middlewares": "./src/middlewares",
 		"@routes": "./src/routes",
-		"@config": "./config",
+		"@config": "./src/configs",
 		"@logs": "./src/logs",
 		"@tests": "./src/tests",
 		"@events": "./src/events",
