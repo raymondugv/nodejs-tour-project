@@ -2,7 +2,7 @@ import { extension } from "mime-types";
 import { diskStorage } from "multer";
 import { v4 as uuid } from "uuid";
 
-const uploadConfig = diskStorage({
+export const uploadConfig = diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, "public/images/");
 	},
@@ -10,5 +10,3 @@ const uploadConfig = diskStorage({
 		cb(null, uuid() + "." + extension(file.mimetype));
 	},
 });
-
-export default uploadConfig;

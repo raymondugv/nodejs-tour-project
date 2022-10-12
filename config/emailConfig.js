@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const emailConfig = {
+export const emailConfig = {
 	host: process.env.EMAIL_HOST,
 	port: process.env.EMAIL_PORT,
 	auth: {
@@ -9,6 +9,4 @@ const emailConfig = {
 	},
 };
 
-const from_address = process.env.FROM_ADDRESS;
-
-export default { emailConfig, from_address };
+export const from_address = process.env.FROM_ADDRESS;
