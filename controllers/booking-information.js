@@ -82,8 +82,7 @@ exports.create = async (req, res) => {
 			where: { id: bookingCreate.id },
 		});
 
-		staffBookingCreated.emit("booking.created", booking);
-		customerBookingCreated.emit("booking.created", booking);
+		newBookingEvent.emit("booking.created", booking);
 
 		return res
 			.status(201)

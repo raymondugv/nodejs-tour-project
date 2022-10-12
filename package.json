@@ -28,7 +28,8 @@
 		"sequelize": "^6.21.4",
 		"sequelize-cli": "^6.4.1",
 		"sharp": "^0.31.0",
-		"uuidv4": "^6.2.13"
+		"uuidv4": "^6.2.13",
+		"winston": "^3.8.2"
 	},
 	"devDependencies": {
 		"@faker-js/faker": "^7.5.0",
