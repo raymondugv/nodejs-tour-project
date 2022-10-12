@@ -1,6 +1,6 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, {json, urlencoded} from "express";
+import express, { json, urlencoded } from "express";
 import * as moduleAlias from "module-alias/register";
 import logger from "morgan";
 
@@ -16,23 +16,23 @@ import bookingInformationRoute from "@routes/booking_informations";
 
 const app = express();
 
-const whitelist = [ "*" ];
+const whitelist = ["*"];
 const corsOptions = {
-  origin : (origin, callback) => {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials : true,
+	origin: (origin, callback) => {
+		if (!origin || whitelist.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+	credentials: true,
 };
 
 app.use(cors(corsOptions));
 
 app.use(logger("dev"));
 app.use(json());
-app.use(urlencoded({extended : false}));
+app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use("/", indexRoute);

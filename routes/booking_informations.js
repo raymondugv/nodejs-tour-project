@@ -1,12 +1,12 @@
-import {Router} from "express";
+import { Router } from "express";
 const router = Router();
 import verifyRoles from "@middlewares/permission";
 import {
-  index,
-  show,
-  create,
-  update,
-  destroy,
+	index,
+	show,
+	create,
+	update,
+	destroy,
 } from "@controllers/booking-information";
 
 router.get("/", index);
