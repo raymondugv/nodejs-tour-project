@@ -1,6 +1,7 @@
+import { getPagination, getPagingData } from "@config/pagination";
 import models from "@models";
 import joi from "joi";
-import { getPagination, getPagingData } from "@config/pagination";
+
 import { filterFunction } from "../config/filterAndSort";
 
 const validate_schema = {

@@ -1,9 +1,9 @@
-import * as moduleAlias from "module-alias/register";
-
-import express, { json, urlencoded } from "express";
 import cookieParser from "cookie-parser";
-import logger from "morgan";
 import cors from "cors";
+import express, { json, urlencoded } from "express";
+import * as moduleAlias from "module-alias/register";
+import logger from "morgan";
+
 require("dotenv").config();
 import auth from "@middlewares/auth";
 import indexRoute from "@routes/index";
