@@ -177,7 +177,7 @@ exports.active = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+exports.destroy = async (req, res) => {
 	try {
 		const tour = await models.Tour.findOne({
 			where: { id: req.params.id },

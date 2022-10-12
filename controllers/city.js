@@ -114,7 +114,7 @@ exports.update = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+exports.destroy = async (req, res) => {
 	try {
 		const city = await models.City.findOne({
 			where: { id: req.params.id },

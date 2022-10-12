@@ -1,14 +1,13 @@
 import { Router } from "express";
 const router = Router();
+import verifyRoles from "@middlewares/permission";
 import {
 	index,
 	show,
 	create,
 	update,
 	destroy,
-	active,
-} from "@controllers/tour";
-import verifyRoles from "@middlewares/permission";
+} from "@controllers/customer-information";
 import multer from "multer";
 import storage from "@config/uploadConfig";
 
@@ -17,16 +16,15 @@ router.get("/:id", verifyRoles, show);
 router.post(
 	"/",
 	verifyRoles,
-	multer({ storage: storage }).single("image"),
+	multer({ storage: storage }).single("avatar"),
 	create
 );
 router.put(
 	"/:id",
 	verifyRoles,
-	multer({ storage: storage }).single("image"),
+	multer({ storage: storage }).single("avatar"),
 	update
 );
 router.delete("/:id", verifyRoles, destroy);
-router.post("/:id/active", verifyRoles, active);
 
 export default router;

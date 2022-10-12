@@ -1,4 +1,4 @@
-const getPagination = (query) => {
+export const getPagination = (query) => {
 	const page = query.page ? +query.page : 1;
 	const size = query.size ? +query.size : 10;
 
@@ -8,7 +8,7 @@ const getPagination = (query) => {
 	return { limit, offset, page };
 };
 
-const getPagingData = (endpoint, data, page, limit) => {
+export const getPagingData = (endpoint, data, page, limit) => {
 	const { count: totalItems, rows } = data;
 
 	const maxId = Math.max.apply(
@@ -43,9 +43,4 @@ const getPagingData = (endpoint, data, page, limit) => {
 		to: minId,
 		data: rows,
 	};
-};
-
-module.exports = {
-	getPagination,
-	getPagingData,
 };

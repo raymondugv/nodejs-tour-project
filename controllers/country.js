@@ -98,7 +98,7 @@ exports.update = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+exports.destroy = async (req, res) => {
 	try {
 		const country = await models.Country.findOne({
 			where: { id: req.params.id },

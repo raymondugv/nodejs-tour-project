@@ -1,7 +1,8 @@
-const models = require("@models");
-const joi = require("joi");
-const { getPagination, getPagingData } = require("@config/pagination");
-const { filterFunction } = require("../config/filterAndSort");
+import { getPagination, getPagingData } from "@config/pagination";
+import models from "@models";
+import joi from "joi";
+
+import { filterFunction } from "../config/filterAndSort";
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -15,7 +16,7 @@ const validate_schema = {
 
 const fieldToCheck = ["email", "username", "phone"];
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
 	try {
 		const { limit, offset, page } = getPagination(req.query);
 		const filter = filterFunction(req.query);
@@ -39,7 +40,7 @@ exports.index = async (req, res) => {
 	}
 };
 
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
 	try {
 		const customer = await models.CustomerInformation.findOne({
 			where: { id: req.params.id },
@@ -54,7 +55,7 @@ exports.show = async (req, res) => {
 	}
 };
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
 	try {
 		const data = req.body;
 		let image = req.file;
@@ -97,7 +98,7 @@ exports.create = async (req, res) => {
 	}
 };
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
 	try {
 		const data = req.body;
 		const schema = joi.object().keys({
@@ -161,7 +162,7 @@ exports.update = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+export const destroy = async (req, res) => {
 	try {
 		const customer = await models.CustomerInformation.findOne({
 			where: { id: req.params.id },

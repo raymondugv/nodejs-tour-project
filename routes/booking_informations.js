@@ -1,9 +1,14 @@
 import { Router } from "express";
 const router = Router();
-import { index, show, create, update, destroy } from "@controllers/user";
 import verifyRoles from "@middlewares/permission";
+import {
+	index,
+	show,
+	create,
+	update,
+	destroy,
+} from "@controllers/booking-information";
 
-/* GET users listing. */
 router.get("/", index);
 router.get("/:id", verifyRoles, show);
 router.post("/", verifyRoles, create);

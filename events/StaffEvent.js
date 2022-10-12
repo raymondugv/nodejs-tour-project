@@ -1,8 +1,8 @@
-const event = require("events");
-const eventEmitter = new event.EventEmitter();
-const models = require("@models");
-const sendEmail = require("@controllers/sendEmail");
-const exchange = require("@config/currencyTransfer");
+import { EventEmitter } from "events";
+const eventEmitter = new EventEmitter();
+import models from "@models";
+import sendEmail from "@controllers/sendEmail";
+import exchange from "@config/currencyTransfer";
 
 const staffBookingCreated = eventEmitter.addListener(
 	"booking.created",
@@ -26,4 +26,4 @@ const staffBookingCreated = eventEmitter.addListener(
 	}
 );
 
-module.exports = { staffBookingCreated };
+export default { staffBookingCreated };

@@ -82,7 +82,8 @@ exports.create = async (req, res) => {
 			where: { id: bookingCreate.id },
 		});
 
-		newBookingEvent.emit("booking.created", booking);
+		staffBookingCreated.emit("booking.created", booking);
+		customerBookingCreated.emit("booking.created", booking);
 
 		return res
 			.status(201)
@@ -143,7 +144,7 @@ exports.update = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+exports.destroy = async (req, res) => {
 	try {
 		const booking = await models.BookingInformation.findOne({
 			where: { id: req.params.id },
