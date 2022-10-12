@@ -120,4 +120,7 @@ const filterFunction = (query) => {
 	return where;
 };
 
-module.exports = { filterFunction, sortFunction };
+module.exports = {
+	filterFunction,
+	sortFunction,
+};

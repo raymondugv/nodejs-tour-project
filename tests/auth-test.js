@@ -13,4 +13,7 @@ const logout = async (token) => {
 		.set("Authorization", `Bearer ${token}`);
 };
 
-module.exports = { login, logout };
+module.exports = {
+	login,
+	logout,
+};
