@@ -9,23 +9,23 @@ require("dotenv").config();
 const auth = require("@middlewares/auth");
 const app = express();
 
-const whitelist = [ "*" ];
+const whitelist = ["*"];
 const corsOptions = {
-  origin : (origin, callback) => {
-    if (!origin || whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials : true,
+	origin: (origin, callback) => {
+		if (!origin || whitelist.indexOf(origin) !== -1) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+	credentials: true,
 };
 
 app.use(cors(corsOptions));
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({extended : false}));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -35,7 +35,10 @@ app.use("/countries", auth, require("@routes/countries"));
 app.use("/cities", auth, require("@routes/cities"));
 app.use("/tours", auth, require("@routes/tours"));
 app.use("/booking-informations", auth, require("@routes/booking-informations"));
-app.use("/customer-informations", auth,
-        require("@routes/customer-informations"));
+app.use(
+	"/customer-informations",
+	auth,
+	require("@routes/customer-informations")
+);
 
 module.exports = app;
