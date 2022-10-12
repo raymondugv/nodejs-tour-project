@@ -1,7 +1,6 @@
 import * as moduleAlias from "module-alias/register";
 
 import express, { json, urlencoded } from "express";
-// import { join } from "path";
 import cookieParser from "cookie-parser";
 import logger from "morgan";
 import cors from "cors";
@@ -13,7 +12,7 @@ import customerInformationRoute from "@routes/customer-informations";
 import countriesRoute from "@routes/countries";
 import citiesRoute from "@routes/cities";
 import toursRoute from "@routes/tours";
-import bookingInformationRoute from "@routes/booking-informations";
+import bookingInformationRoute from "@routes/booking_informations";
 
 const app = express();
 
@@ -35,7 +34,6 @@ app.use(logger("dev"));
 app.use(json());
 app.use(urlencoded({ extended: false }));
 app.use(cookieParser());
-// app.use(static(join(__dirname, "public")));
 
 app.use("/", indexRoute);
 app.use("/users", auth, usersRoute);
