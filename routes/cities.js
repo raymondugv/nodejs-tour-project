@@ -1,7 +1,7 @@
-import { Router } from "express";
+import {Router} from "express";
 const router = Router();
 import verifyRoles from "@middlewares/permission";
-import { index, show, create, update, destroy } from "@controllers/city";
+import {index, show, create, update, destroy} from "@controllers/city";
 
 router.get("/", index);
 router.get("/:id", verifyRoles, show);

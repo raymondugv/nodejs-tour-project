@@ -1,6 +1,6 @@
-import { Router } from "express";
+import {Router} from "express";
 const router = Router();
-import { login, logout } from "@controllers/user";
+import {login, logout} from "@controllers/user";
 import auth from "@middlewares/auth";
 
 router.post("/login", login);

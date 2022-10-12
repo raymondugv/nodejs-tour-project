@@ -1,131 +1,133 @@
 const models = require("@models");
 const joi = require("joi");
-const { getPagination, getPagingData } = require("@config/pagination");
-const { filterFunction } = require("../config/filterAndSort");
+const {getPagination, getPagingData} = require("@config/pagination");
+const {filterFunction} = require("../config/filterAndSort");
 
 const validate_schema = {
-	name: joi.string().required(),
-	country: joi.number().required(),
-	slug: joi.string().required(),
-	description: joi.string(),
+  name : joi.string().required(),
+  country : joi.number().required(),
+  slug : joi.string().required(),
+  description : joi.string(),
 };
 
 exports.index = async (req, res) => {
-	try {
-		const { limit, offset, page } = getPagination(req.query);
-		const filter = filterFunction(req.query);
+  try {
+    const {limit, offset, page} = getPagination(req.query);
+    const filter = filterFunction(req.query);
 
-		const cities = await models.City.findAndCountAll({
-			limit,
-			offset,
-			where: filter,
-		});
+    const cities = await models.City.findAndCountAll({
+      limit,
+      offset,
+      where : filter,
+    });
 
-		const response = getPagingData("cities", cities, page, limit);
+    const response = getPagingData("cities", cities, page, limit);
 
-		return res.status(200).json({ cities: response });
-	} catch (error) {
-		return res.status(500).json({ error: error.message });
-	}
+    return res.status(200).json({cities : response});
+  } catch (error) {
+    return res.status(500).json({error : error.message});
+  }
 };
 
 exports.show = async (req, res) => {
-	try {
-		const city = await models.City.findOne({
-			where: { id: req.params.id },
-		});
+  try {
+    const city = await models.City.findOne({
+      where : {id : req.params.id},
+    });
 
-		if (!city) return res.status(404).json({ message: "City not found" });
+    if (!city)
+      return res.status(404).json({message : "City not found"});
 
-		return res.status(200).json({ city });
-	} catch (error) {
-		return res.status(500).json({ error: error.message });
-	}
+    return res.status(200).json({city});
+  } catch (error) {
+    return res.status(500).json({error : error.message});
+  }
 };
 
 exports.create = async (req, res) => {
-	try {
-		const data = req.body;
-		const schema = joi.object().keys(validate_schema);
+  try {
+    const data = req.body;
+    const schema = joi.object().keys(validate_schema);
 
-		const { error, value } = schema.validate(data);
+    const {error, value} = schema.validate(data);
 
-		if (error) {
-			return res.status(400).json({ error });
-		}
+    if (error) {
+      return res.status(400).json({error});
+    }
 
-		const { name, country, slug, description } = data;
+    const {name, country, slug, description} = data;
 
-		const cityExist = await models.City.findOne({ where: { slug } });
+    const cityExist = await models.City.findOne({where : {slug}});
 
-		if (cityExist)
-			return res.status(409).json({ message: "City already exist" });
+    if (cityExist)
+      return res.status(409).json({message : "City already exist"});
 
-		const city = await models.City.create({
-			name: name,
-			country: country,
-			slug: slug,
-			description: description,
-		});
+    const city = await models.City.create({
+      name : name,
+      country : country,
+      slug : slug,
+      description : description,
+    });
 
-		return res
-			.status(201)
-			.json({ message: "City created successfully", city });
-	} catch (error) {
-		return res.status(500).json({ error: error.message });
-	}
+    return res.status(201).json({message : "City created successfully", city});
+  } catch (error) {
+    return res.status(500).json({error : error.message});
+  }
 };
 
 exports.update = async (req, res) => {
-	try {
-		const data = req.body;
-		const schema = joi.object().keys(validate_schema);
+  try {
+    const data = req.body;
+    const schema = joi.object().keys(validate_schema);
 
-		const { error, value } = schema.validate(data);
+    const {error, value} = schema.validate(data);
 
-		if (error) return res.status(400).json({ error });
+    if (error)
+      return res.status(400).json({error});
 
-		const city = await models.City.findOne({
-			where: { id: req.params.id },
-		});
+    const city = await models.City.findOne({
+      where : {id : req.params.id},
+    });
 
-		if (!city) return res.status(404).json({ message: "City not found" });
+    if (!city)
+      return res.status(404).json({message : "City not found"});
 
-		const { name, country, slug, description } = data;
+    const {name, country, slug, description} = data;
 
-		const cityExist = await models.City.findOne({
-			where: { slug },
-		});
+    const cityExist = await models.City.findOne({
+      where : {slug},
+    });
 
-		if (cityExist) {
-			return res.status(409).json({ message: "City already exist" });
-		}
+    if (cityExist) {
+      return res.status(409).json({message : "City already exist"});
+    }
 
-		city.update({
-			name: name,
-			country: country,
-			slug: slug,
-			description: description,
-		});
+    city.update({
+      name : name,
+      country : country,
+      slug : slug,
+      description : description,
+    });
 
-		return res.status(200).json({ message: "City updated successfully" });
-	} catch (error) {
-		return res.status(500).json({ error: error.message });
-	}
+    return res.status(200).json({message : "City updated successfully"});
+  } catch (error) {
+    return res.status(500).json({error : error.message});
+  }
 };
 
 exports.destroy = async (req, res) => {
-	try {
-		const city = await models.City.findOne({
-			where: { id: req.params.id },
-		});
+  try {
+    const city = await models.City.findOne({
+      where : {id : req.params.id},
+    });
 
-		if (!city) return res.status(404).json({ message: "City not found" });
+    if (!city)
+      return res.status(404).json({message : "City not found"});
 
-		city.destroy();
+    city.destroy();
 
-		return res.status(200).json({ message: "City deleted successfully" });
-	} catch (error) {
-		return res.status(500).json({ error: error.message });
-	}
+    return res.status(200).json({message : "City deleted successfully"});
+  } catch (error) {
+    return res.status(500).json({error : error.message});
+  }
 };

@@ -1,6 +1,6 @@
-import { Router } from "express";
+import {Router} from "express";
 const router = Router();
-import { index, show, create, update, destroy } from "@controllers/user";
+import {index, show, create, update, destroy} from "@controllers/user";
 import verifyRoles from "@middlewares/permission";
 
 /* GET users listing. */
