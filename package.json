@@ -50,13 +50,14 @@
 	},
 	"_moduleAliases": {
 		"@app": "app.js",
-		"@models": "models",
-		"@controllers": "controllers",
-		"@middlewares": "middlewares",
-		"@routes": "routes",
-		"@config": "config",
-		"@logs": "logs",
-		"@tests": "tests",
-		"@events": "events"
+		"@models": "./src/models",
+		"@controllers": "./src/controllers",
+		"@middlewares": "./src/middlewares",
+		"@routes": "./src/routes",
+		"@config": "./config",
+		"@logs": "./src/logs",
+		"@tests": "./src/tests",
+		"@events": "./src/events",
+		"@email": "./src/email"
 	}
 }
