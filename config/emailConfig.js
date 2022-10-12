@@ -11,4 +11,4 @@ const emailConfig = {
 
 const from_address = process.env.FROM_ADDRESS;
 
-module.exports = { emailConfig, from_address };
+export default { emailConfig, from_address };

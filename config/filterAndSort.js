@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+import { Op } from "sequelize";
 
 const sortFunction = (field) => {
 	if (!field) return;
@@ -120,4 +120,4 @@ const filterFunction = (query) => {
 	return where;
 };
 
-module.exports = { filterFunction, sortFunction };
+export default { filterFunction, sortFunction };

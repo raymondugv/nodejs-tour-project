@@ -7,4 +7,4 @@ const uniqueId = () => {
 	return text;
 };
 
-module.exports = uniqueId;
+export default uniqueId;
