@@ -39,4 +39,7 @@ const customerBookingUpdate = eventEmitter.addListener(
 	}
 );
 
-module.exports = { customerBookingCreated, customerBookingUpdate };
+module.exports = {
+	customerBookingCreated,
+	customerBookingUpdate,
+};

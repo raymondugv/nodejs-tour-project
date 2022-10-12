@@ -45,4 +45,7 @@ const getPagingData = (endpoint, data, page, limit) => {
 	};
 };
 
-module.exports = { getPagination, getPagingData };
+module.exports = {
+	getPagination,
+	getPagingData,
+};
