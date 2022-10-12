@@ -1,3 +1,13 @@
 {
-	"presets": ["@babel/preset-env"]
+	"presets": ["@babel/preset-env"],
+	"plugins": [
+		[
+			"wildcard",
+			{
+				"exts": ["js", "es6", "es", "jsx", "javascript"],
+				"nostrip": true,
+				"noModifyCase": true
+			}
+		]
+	]
 }
