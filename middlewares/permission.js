@@ -1,4 +1,4 @@
-const { PERMISSION, PERMISSION_ROLE } = require("../config/data");
+const { PERMISSION, PERMISSION_ROLE } = require("@config/data");
 
 module.exports = (req, res, next) => {
 	const { user, method, originalUrl } = req;

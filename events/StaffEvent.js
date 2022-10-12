@@ -1,8 +1,8 @@
 const event = require("events");
 const eventEmitter = new event.EventEmitter();
-const models = require("../models");
-const sendEmail = require("../controllers/sendEmail");
-const exchange = require("../config/currencyTransfer");
+const models = require("@models");
+const sendEmail = require("@controllers/sendEmail");
+const exchange = require("@config/currencyTransfer");
 
 const staffBookingCreated = eventEmitter.addListener(
 	"booking.created",
@@ -10,7 +10,7 @@ const staffBookingCreated = eventEmitter.addListener(
 		sendEmail(
 			"staff@nodetour.js",
 			"New Booking received" + booking.booking_number,
-			"../config/email-templates/newBookingStaff.html",
+			"@config/email-templates/newBookingStaff.html",
 			{
 				bookingNumber: booking.booking_number,
 				createdAt: booking.createdAt,

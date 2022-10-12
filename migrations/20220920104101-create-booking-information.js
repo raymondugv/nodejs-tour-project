@@ -1,5 +1,5 @@
 "use strict";
-const { BOOKING_STATUS, PAYMENT_STATUS } = require("../config/data");
+const { BOOKING_STATUS, PAYMENT_STATUS } = require("@config/data");
 
 module.exports = {
 	async up(queryInterface, Sequelize) {

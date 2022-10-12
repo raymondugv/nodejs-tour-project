@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-const { emailConfig, from_address } = require("../config/emailConfig");
+const { emailConfig, from_address } = require("@config/emailConfig");
 const fs = require("fs").promises;
 const path = require("path");
 const handlebars = require("handlebars");

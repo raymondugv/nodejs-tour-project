@@ -1,7 +1,14 @@
-const models = require("../models");
+const models = require("@models");
 const joi = require("joi");
-const event = require("events");
-const { newBookingEvent } = require("../events/newBookingEvent");
+const { staffBookingCreated } = require("@events/StaffEvent");
+
+const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("../config/filterAndSort");
+
+const {
+	customerBookingCreated,
+	customerBookingUpdate,
+} = require("@events/CustomerEvent");
 
 const validate_schema = {
 	tour_id: joi.number().required(),
@@ -12,9 +19,23 @@ const validate_schema = {
 
 exports.index = async (req, res) => {
 	try {
-		const bookings = await models.BookingInformation.findAll();
+		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
 
-		return res.status(200).json({ bookings });
+		const bookings = await models.BookingInformation.findAndCountAll({
+			limit,
+			offset,
+			where: filter,
+		});
+
+		const response = getPagingData(
+			"booking-informations",
+			bookings,
+			page,
+			limit
+		);
+
+		return res.status(200).json({ booking_informations: response });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}

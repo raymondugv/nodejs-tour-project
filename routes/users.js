@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const controllers = require("../controllers/user");
-const verifyRoles = require("../middleware/permission");
+const controllers = require("@controllers/user");
+const verifyRoles = require("@middlewares/permission");
 
 /* GET users listing. */
 router.get("/", controllers.index);

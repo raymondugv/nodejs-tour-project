@@ -1,5 +1,5 @@
 "use strict";
-const { GENDER } = require("../config/data");
+const { GENDER } = require("@config/data");
 module.exports = {
 	async up(queryInterface, Sequelize) {
 		await queryInterface.createTable("CustomerInformations", {
@@ -25,7 +25,7 @@ module.exports = {
 				type: Sequelize.STRING,
 			},
 			birthday: {
-				type: Sequelize.DATE,
+				type: Sequelize.DATEONLY,
 			},
 			avatar: {
 				type: Sequelize.STRING,

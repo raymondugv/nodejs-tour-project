@@ -1,6 +1,8 @@
-const models = require("../models");
+const models = require("@models");
 const joi = require("joi");
 const fs = require("fs");
+const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("@config/filterAndSort");
 
 const validate_schema = {
 	title: joi.string().required(),
@@ -17,12 +19,21 @@ const validate_schema = {
 
 exports.index = async (req, res) => {
 	try {
-		let tours = await models.Tour.findAll();
+		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
+
+		let tours = await models.Tour.findAndCountAll({
+			limit,
+			offset,
+			where: filter,
+		});
 
 		if (req.user.roleId !== 1)
 			tours = tours.filter((tour) => tour.owner === req.user.id);
 
-		return res.status(200).json({ tours });
+		const response = getPagingData("tours", tours, page, limit);
+
+		return res.status(200).json({ tours: response });
 	} catch (error) {
 		return res.status(500).json({ message: error.message });
 	}

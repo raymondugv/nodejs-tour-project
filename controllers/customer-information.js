@@ -1,6 +1,7 @@
-const models = require("../models");
+const models = require("@models");
 const joi = require("joi");
-const { Op } = require("sequelize");
+const { getPagination, getPagingData } = require("@config/pagination");
+const { filterFunction } = require("../config/filterAndSort");
 
 const validate_schema = {
 	name: joi.string().required(),
@@ -10,14 +11,29 @@ const validate_schema = {
 	username: joi.string().required(),
 	password: joi.string().required(),
 	birthday: joi.date(),
-	avatar: joi.string(),
 };
+
+const fieldToCheck = ["email", "username", "phone"];
 
 exports.index = async (req, res) => {
 	try {
-		const customers = await models.CustomerInformation.findAll();
+		const { limit, offset, page } = getPagination(req.query);
+		const filter = filterFunction(req.query);
 
-		return res.status(200).json({ customers });
+		const customers = await models.CustomerInformation.findAndCountAll({
+			limit,
+			offset,
+			where: filter,
+		});
+
+		const response = getPagingData(
+			"customer-informations",
+			customers,
+			page,
+			limit
+		);
+
+		return res.status(200).json({ customers: response });
 	} catch (error) {
 		return res.status(500).json({ error: error.message });
 	}
@@ -53,14 +69,14 @@ exports.create = async (req, res) => {
 
 		let { name, email, gender, phone, username, password, birthday } = data;
 
-		const customerExist = await models.CustomerInformation.findOne({
-			where: {
-				[Op.or]: [{ email }, { username }, { phone }],
-			},
-		});
+		for (let field of fieldToCheck) {
+			const customerExist = await models.CustomerInformation.findOne({
+				where: { [field]: data[field] },
+			});
 
-		if (customerExist)
-			return res.status(400).json({ error: "Username or Email existed" });
+			if (customerExist)
+				return res.status(400).json({ error: `${field} existed` });
+		}
 
 		const customer = await models.CustomerInformation.create({
 			name,
@@ -84,16 +100,21 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
 	try {
 		const data = req.body;
-		const schema = joi.object().keys(validate_schema);
-		const image = req.file;
+		const schema = joi.object().keys({
+			name: joi.string().required(),
+			email: joi.string().email().required(),
+			gender: joi.number().required(),
+			phone: joi.string().required(),
+			username: joi.string().required(),
+			password: joi.string(),
+			birthday: joi.date(),
+		});
 
 		const { error, value } = schema.validate(data);
 
 		if (error) {
 			return res.status(400).json({ error });
 		}
-
-		if (!image) return res.status(400).json({ error: "Image is required" });
 
 		let { name, email, gender, phone, username, password, birthday } = data;
 
@@ -104,16 +125,22 @@ exports.update = async (req, res) => {
 		if (!customer)
 			return res.status(404).json({ error: "Customer not found" });
 
-		const customerExist = await models.CustomerInformation.findOne({
-			where: {
-				[Op.or]: [{ email }, { username }, { phone }],
-			},
-		});
+		let avatar = customer.avatar;
 
-		if (customerExist)
-			return res
-				.status(404)
-				.json({ error: "Username or Email already exist" });
+		if (req.file) {
+			avatar = req.file;
+		}
+
+		for (let field of fieldToCheck) {
+			if (customer[field] !== data[field]) {
+				const customerExist = await models.CustomerInformation.findOne({
+					where: { [field]: data[field] },
+				});
+
+				if (customerExist)
+					return res.status(400).json({ error: `${field} existed` });
+			}
+		}
 
 		customer.update({
 			name,
@@ -123,7 +150,7 @@ exports.update = async (req, res) => {
 			username,
 			password,
 			birthday,
-			avatar: image.path,
+			avatar: avatar,
 		});
 
 		return res

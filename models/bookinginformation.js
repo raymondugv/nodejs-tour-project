@@ -1,6 +1,6 @@
 "use strict";
 const { Model } = require("sequelize");
-const booking_code = require("../config/booking_reference");
+const booking_code = require("@config/booking_reference");
 
 module.exports = (sequelize, DataTypes) => {
 	class BookingInformation extends Model {

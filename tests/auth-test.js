@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../app");
+const app = require("@app");
 
 const login = async (user, password) => {
 	return await request(app)
@@ -13,4 +13,7 @@ const logout = async (token) => {
 		.set("Authorization", `Bearer ${token}`);
 };
 
-module.exports = { login, logout };
+module.exports = {
+	login,
+	logout,
+};
