@@ -1,6 +1,6 @@
-import { Op } from "sequelize";
+const { Op } = require("sequelize");
 
-export const sortFunction = (field) => {
+const sortFunction = (field) => {
 	if (!field) return;
 
 	const order = [];
@@ -18,7 +18,7 @@ export const sortFunction = (field) => {
 	return order;
 };
 
-export const filterFunction = (query) => {
+const filterFunction = (query) => {
 	const where = {};
 	const { page, size, ...rest } = query;
 
@@ -119,3 +119,7 @@ export const filterFunction = (query) => {
 
 	return where;
 };
+<<<<<<< HEAD
+=======
+
+module.exports = { filterFunction, sortFunction };
