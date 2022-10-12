@@ -1,8 +1,8 @@
 const event = require("events");
 const eventEmitter = new event.EventEmitter();
 
-const sendEmail = require("../controllers/sendEmail");
-const exchange = require("../config/currencyTransfer");
+const sendEmail = require("@controllers/sendEmail").default;
+const exchange = require("@config/currencyTransfer");
 
 const newBookingEvent = eventEmitter.addListener(
 	"booking.created",
@@ -22,7 +22,7 @@ const newBookingEvent = eventEmitter.addListener(
 		await sendEmail(
 			"staff@nodetour.js",
 			"New Booking received " + booking.booking_number,
-			"../email/staff/newBooking.html",
+			"@email/staff/newBooking.html",
 			fields
 		);
 
@@ -30,7 +30,7 @@ const newBookingEvent = eventEmitter.addListener(
 			await sendEmail(
 				"customer@nodetour.js",
 				"New Booking Customer " + booking.booking_number,
-				"../email/customer/newBooking.html",
+				"@email/customer/newBooking.html",
 				fields
 			);
 		}, 1000);
