@@ -144,7 +144,7 @@ exports.update = async (req, res) => {
 	}
 };
 
-exports.delete = async (req, res) => {
+exports.destroy = async (req, res) => {
 	try {
 		const booking = await models.BookingInformation.findOne({
 			where: { id: req.params.id },

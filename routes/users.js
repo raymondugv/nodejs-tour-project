@@ -1,13 +1,13 @@
-const express = require("express");
-const router = express.Router();
-const controllers = require("@controllers/user");
-const verifyRoles = require("@middlewares/permission");
+import { Router } from "express";
+const router = Router();
+import { index, show, create, update, destroy } from "@controllers/user";
+import verifyRoles from "@middlewares/permission";
 
 /* GET users listing. */
-router.get("/", controllers.index);
-router.get("/:id", verifyRoles, controllers.show);
-router.post("/", verifyRoles, controllers.create);
-router.put("/:id", verifyRoles, controllers.update);
-router.delete("/:id", verifyRoles, controllers.delete);
+router.get("/", index);
+router.get("/:id", verifyRoles, show);
+router.post("/", verifyRoles, create);
+router.put("/:id", verifyRoles, update);
+router.delete("/:id", verifyRoles, destroy);
 
-module.exports = router;
+export default router;

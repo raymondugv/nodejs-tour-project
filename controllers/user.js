@@ -188,7 +188,7 @@ exports.update = async (req, res) => {
 };
 
 // destroy
-exports.delete = async (req, res) => {
+exports.destroy = async (req, res) => {
 	try {
 		const user = await models.User.findOne({
 			where: { id: req.params.id },

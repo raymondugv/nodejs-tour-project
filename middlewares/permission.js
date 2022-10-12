@@ -1,6 +1,6 @@
-const { PERMISSION, PERMISSION_ROLE } = require("@config/data");
+import { PERMISSION, PERMISSION_ROLE } from "@config/data";
 
-module.exports = (req, res, next) => {
+export default (req, res, next) => {
 	const { user, method, originalUrl } = req;
 	const endpoint = originalUrl.split("/")[1];
 	const url = originalUrl.split("/")[3];
