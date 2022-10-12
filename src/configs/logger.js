@@ -12,7 +12,7 @@ const customFormat = format.combine(
 const logger = createLogger({
 	format: customFormat,
 	transports: [
-		new transports.File({ filename: "logs/error.log", level: "info" }),
+		new transports.File({ filename: "@logs/error.log", level: "info" }),
 	],
 });
 
