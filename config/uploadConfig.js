@@ -1,14 +1,12 @@
-const mime = require("mime-types");
-const multer = require("multer");
-const { v4: uuid } = require("uuid");
+import { extension } from "mime-types";
+import { diskStorage } from "multer";
+import { v4 as uuid } from "uuid";
 
-const uploadConfig = multer.diskStorage({
+export const uploadConfig = diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, "public/images/");
 	},
 	filename: (req, file, cb) => {
-		cb(null, uuid() + "." + mime.extension(file.mimetype));
+		cb(null, uuid() + "." + extension(file.mimetype));
 	},
 });
-
-module.exports = uploadConfig;

@@ -1,7 +1,13 @@
 import { Router } from "express";
 const router = Router();
-import { index, show, create, update, destroy } from "@controllers/country";
 import verifyRoles from "@middlewares/permission";
+import {
+	index,
+	show,
+	create,
+	update,
+	destroy,
+} from "@controllers/booking-information";
 
 router.get("/", index);
 router.get("/:id", verifyRoles, show);

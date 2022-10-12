@@ -1,25 +1,32 @@
-const express = require("express");
-const router = express.Router();
-const controller = require("@controllers/tour");
-const verifyRoles = require("@middlewares/permission");
-const multer = require("multer");
-const storage = require("@config/uploadConfig");
+import { Router } from "express";
+const router = Router();
+import {
+	index,
+	show,
+	create,
+	update,
+	destroy,
+	active,
+} from "@controllers/tour";
+import verifyRoles from "@middlewares/permission";
+import multer from "multer";
+import storage from "@config/uploadConfig";
 
-router.get("/", controller.index);
-router.get("/:id", verifyRoles, controller.show);
+router.get("/", index);
+router.get("/:id", verifyRoles, show);
 router.post(
 	"/",
 	verifyRoles,
 	multer({ storage: storage }).single("image"),
-	controller.create
+	create
 );
 router.put(
 	"/:id",
 	verifyRoles,
 	multer({ storage: storage }).single("image"),
-	controller.update
+	update
 );
-router.delete("/:id", verifyRoles, controller.delete);
-router.post("/:id/active", verifyRoles, controller.active);
+router.delete("/:id", verifyRoles, destroy);
+router.post("/:id/active", verifyRoles, active);
 
-module.exports = router;
+export default router;
